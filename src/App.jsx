@@ -4,16 +4,17 @@ import Home from "./components/Home";
 import Login from "./components/Login";
 import Store from "./utils/Store";
 import { Provider } from "react-redux";
-import Feed from "./components/Feed";
+import FeedData from "./components/FeedData"; // Import the FeedData component
 
 const App = () => {
   return (
     <Provider store={Store}>
       <BrowserRouter basename="/">
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/feed" element={<Feed />} />
+          <Route path="/" element={<Home />}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/feeddata" element={<FeedData />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </Provider>

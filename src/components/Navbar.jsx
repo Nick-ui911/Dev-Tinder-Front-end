@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux"; // Importing useSelector
 import { Link } from "react-router-dom"; // Make sure to import Link if you're using it
 
 const Navbar = () => {
   const user = useSelector((store) => store.user); // Accessing the Redux store
+  const[loading ,setLoading] = useState(false)
 
   return (
-    <div className="navbar bg-base-100 shadow-sm fixed top-0">
+    <div className="navbar bg-base-100 shadow-sm fixed top-0 w-full h-16 z-10">
       <div className="flex-1">
         <a className="btn btn-ghost text-xl">DevTinder</a>
       </div>
@@ -27,7 +28,7 @@ const Navbar = () => {
                 alt="User Avatar"
                 src={
                   user?.PhotoUrl ||
-                  "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                  "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
                 }
               />
             </div>
@@ -42,6 +43,7 @@ const Navbar = () => {
                 <Link to="/login" className="btn btn-primary">
                   Login
                 </Link>
+              
               ) : (
                 <span className="text-lg font-semibold">{user.name}</span>
               )}
