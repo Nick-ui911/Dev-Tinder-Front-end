@@ -2,12 +2,13 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/UserSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 
 const Login = () => {
   const [email, setEmail] = useState("saurav@gmail.com");
   const [password, setPassword] = useState("Saurav@102030");
+  const [error,setError] = useState("")
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -22,7 +23,8 @@ const Login = () => {
       dispatch(addUser(res.data));
       navigate("/feeddata");
     } catch (error) {
-      console.log(error);
+      setError(error?.response?.data)
+     
     }
   };
 
@@ -32,6 +34,7 @@ const Login = () => {
         <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-6">
           Login
         </h2>
+        {error && <span className="text-red-500 text-sm">{error}</span>} {/* Error message display */}
         <form onSubmit={handleSubmit}>
           <div className="mb-6">
             <label className="block text-gray-700 text-sm font-medium">Email</label>
@@ -63,9 +66,9 @@ const Login = () => {
         <div className="text-center mt-4">
           <p className="text-sm text-gray-600">
             Don't have an account?{" "}
-            <a href="/register" className="text-blue-600 hover:underline">
+            <Link to="/register" className="text-blue-600 hover:underline">
               Sign up
-            </a>
+            </Link>
           </p>
         </div>
       </div>

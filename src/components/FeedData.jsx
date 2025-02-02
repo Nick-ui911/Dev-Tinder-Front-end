@@ -2,7 +2,8 @@ import React from 'react'
 
 function FeedData() {
   return (
-    <div className="carousel carousel-vertical rounded-box h-96">
+   <div className='flex items-center justify-center min-h-screen bg-gray-900'>
+     <div className="carousel carousel-vertical rounded-box h-96">
     <div className="carousel-item h-full">
       <img src="https://img.daisyui.com/images/stock/photo-1559703248-dcaaec9fab78.webp" />
     </div>
@@ -25,6 +26,7 @@ function FeedData() {
       <img src="https://img.daisyui.com/images/stock/photo-1601004890684-d8cbf643f5f2.webp" />
     </div>
   </div>
+   </div>
   )
 }
 
