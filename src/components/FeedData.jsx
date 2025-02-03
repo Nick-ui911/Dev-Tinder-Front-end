@@ -1,33 +1,42 @@
-import React from 'react'
+import axios from "axios";
+import React, { useEffect } from "react";
+import FeedCard from "./FeedCard";
+import { useDispatch, useSelector } from "react-redux";
+import { addFeed } from "../utils/FeedSlice";
+import { BASE_URL } from "../utils/constants";
 
 function FeedData() {
+  const dispatch = useDispatch();
+  const feeds = useSelector((store) => store.feed);
+
+  const fetchFeedData = async () => {
+    try {
+      if (feeds?.length) return; // Prevents API call if feeds exist
+
+      const response = await axios.get(BASE_URL + "/feed", { withCredentials: true });
+    
+
+      dispatch(addFeed(response.data.data)); // Ensure correct state update
+    } catch (error) {
+      console.error("Error fetching feeds:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchFeedData();
+  }, []); // Re-run if `feeds` changes
+
+
+
   return (
-   <div className='flex items-center justify-center min-h-screen bg-gray-900'>
-     <div className="carousel carousel-vertical rounded-box h-96">
-    <div className="carousel-item h-full">
-      <img src="https://img.daisyui.com/images/stock/photo-1559703248-dcaaec9fab78.webp" />
+    <div className="flex flex-col items-center my-16 gap-4 p-4">
+      {feeds?.length > 0 ? (
+        feeds.map((feed, index) => <FeedCard key={index} {...feed} />)
+      ) : (
+        <p className="text-gray-500">No feeds available</p>
+      )}
     </div>
-    <div className="carousel-item h-full">
-      <img src="https://img.daisyui.com/images/stock/photo-1565098772267-60af42b81ef2.webp" />
-    </div>
-    <div className="carousel-item h-full">
-      <img src="https://img.daisyui.com/images/stock/photo-1572635148818-ef6fd45eb394.webp" />
-    </div>
-    <div className="carousel-item h-full">
-      <img src="https://img.daisyui.com/images/stock/photo-1494253109108-2e30c049369b.webp" />
-    </div>
-    <div className="carousel-item h-full">
-      <img src="https://img.daisyui.com/images/stock/photo-1550258987-190a2d41a8ba.webp" />
-    </div>
-    <div className="carousel-item h-full">
-      <img src="https://img.daisyui.com/images/stock/photo-1559181567-c3190ca9959b.webp" />
-    </div>
-    <div className="carousel-item h-full">
-      <img src="https://img.daisyui.com/images/stock/photo-1601004890684-d8cbf643f5f2.webp" />
-    </div>
-  </div>
-   </div>
-  )
+  );
 }
 
-export default FeedData
+export default FeedData;

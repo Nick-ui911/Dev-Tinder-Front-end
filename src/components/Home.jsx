@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import Footer from "./Footer";
-import Navbar from "./Navbar"; // Ensure this import is correct
+import Navbar from "./Navbar";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/UserSlice";
@@ -12,35 +12,34 @@ const Home = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((store) => store.user);
-  const ProfileView = async () => {
-    if (user) return; // Ensure this check works as expected
-    const token = localStorage.getItem("token"); // Check if token exists
 
-    if (!token) {
-      navigate("/login"); // Redirect to login if no token is found
-      return;
-    }
-  
+  // Function to fetch user profile
+  const ProfileView = async () => {
     try {
       const res = await axios.get(BASE_URL + "/profile/view", {
         withCredentials: true, // Ensure backend supports this
       });
-      dispatch(addUser(res.data));
+      dispatch(addUser(res.data)); // Dispatch user data to Redux
     } catch (error) {
-      if (error.response?.status === 401) { // Corrected error handling
+      // If 401 error, redirect to login
+      if (error.response?.status === 401) {
         navigate("/login");
+      } else {
+        console.error("Error fetching profile", error);
       }
-      
     }
   };
+
   useEffect(() => {
-    if (!user) ProfileView();
-  }, [user]);
+    if (!user) {
+      ProfileView(); // Fetch profile only if user is not available in Redux
+    }
+  }, [user, dispatch]); // Run when `user` state changes
 
   return (
     <div>
       <Navbar />
-      <Outlet /> {/* This is where Feed or Login will be displayed */}
+      <Outlet /> {/* This will display Feed or Login based on route */}
       <Footer />
     </div>
   );
