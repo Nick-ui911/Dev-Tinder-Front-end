@@ -12,29 +12,24 @@ const Home = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((store) => store.user);
-
-  // Function to fetch user profile
   const ProfileView = async () => {
+    if (user) return; // Ensure this check works as expected
+
     try {
       const res = await axios.get(BASE_URL + "/profile/view", {
         withCredentials: true, // Ensure backend supports this
       });
-      dispatch(addUser(res.data)); // Dispatch user data to Redux
+      dispatch(addUser(res.data));
     } catch (error) {
-      // If 401 error, redirect to login
       if (error.response?.status === 401) {
+        // Corrected error handling
         navigate("/login");
-      } else {
-        console.error("Error fetching profile", error);
       }
     }
   };
-
   useEffect(() => {
-    if (!user) {
-      ProfileView(); // Fetch profile only if user is not available in Redux
-    }
-  }, [user, dispatch]); // Run when `user` state changes
+    if (!user) ProfileView();
+  }, [user]);
 
   return (
     <div>

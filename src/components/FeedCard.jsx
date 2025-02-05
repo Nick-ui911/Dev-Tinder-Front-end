@@ -22,8 +22,8 @@ const FeedCard = ({ name, gender, age, PhotoUrl, skills }) => {
             ))}
           </div>
           <div className="card-actions justify-between mt-4">
-            <button className="btn bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">❌ Dislike</button>
-            <button className="btn bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">❤️ Like</button>
+            <button className="btn bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">❌ ignored</button>
+            <button className="btn bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">❤️ interested</button>
           </div>
         </div>
       </div>
