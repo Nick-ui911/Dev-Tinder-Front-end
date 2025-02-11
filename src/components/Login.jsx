@@ -6,8 +6,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 
 const Login = () => {
-  const [email, setEmail] = useState("saurav@gmail.com");
-  const [password, setPassword] = useState("Saurav@102030");
+  const [email, setEmail] = useState("vasooli@gmail.com");
+  const [password, setPassword] = useState("Vasooli@102030");
   const [error, setError] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();

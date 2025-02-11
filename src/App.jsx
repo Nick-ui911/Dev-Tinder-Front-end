@@ -9,6 +9,8 @@ import Profile from "./components/Profile";
 import Register from "./components/Register";
 import ForgotpasswordPage from "./components/ForgotpasswordPage";
 import EditProfile from "./components/EditProfile";
+import Connections from "./components/Connections";
+import Request from "./components/Request";
 
 const App = () => {
   return (
@@ -22,6 +24,8 @@ const App = () => {
             <Route path="/profile" element={<Profile />} />
             <Route path="/register" element={<Register />} />
             <Route path="/ForgotPasswordPage" element={<ForgotpasswordPage />} />
+            <Route path="/connections" element={<Connections />} />
+            <Route path="/request" element={<Request />} />
           </Route>
         </Routes>
       </BrowserRouter>

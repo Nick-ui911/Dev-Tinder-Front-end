@@ -55,8 +55,18 @@ const Navbar = () => {
             >
              
               <li>
-                <Link to="/profile" className="text-lg font-semibold">
+                <Link to="/profile" className="text-sm font-semibold">
                  Show Profile
+                </Link>
+              </li>
+              <li>
+                <Link to="/connections" className="text-sm font-semibold">
+                 Show Connections
+                </Link>
+              </li>
+              <li>
+                <Link to="/request" className="text-sm font-semibold">
+                 Request
                 </Link>
               </li>
               <li>
