@@ -33,7 +33,10 @@ const FeedCard = ({ _id, name, gender, age, PhotoUrl, skills }) => {
         </figure>
         <div className="card-body p-4">
           <h2 className="text-2xl font-bold text-gray-800">
-            {name}, {age}
+            {name} 
+          </h2>
+          <h2 className="text-2xl font-bold text-gray-800">
+          {age}
           </h2>
           <p className="text-gray-600">{gender}</p>
           <div className="mt-2 flex flex-wrap gap-2">

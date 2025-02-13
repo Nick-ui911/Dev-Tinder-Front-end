@@ -12,7 +12,9 @@ const ConnectionSlice = createSlice({
       state.connections = action.payload; // Store the fetched connections in `connections`
     },
     removeConnection: (state) => {
-      state.connections = []; // Clear the connections array (do not return null)
+      state.connections = state.connections.filter(
+        (val) => val._id !== action.payload
+      );
     },
   },
 });

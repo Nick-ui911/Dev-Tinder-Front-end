@@ -4,8 +4,8 @@ import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import FeedCard from "./FeedCard";
 import { addUser } from "../utils/UserSlice";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
+
 
 const EditProfile = () => {
   const user = useSelector((store) => store.user);
@@ -16,7 +16,7 @@ const EditProfile = () => {
   const [age, setAge] = useState(user?.age || "");
   const [gender, setGender] = useState(user?.gender || "");
   const [skills, setSkills] = useState(
-    user?.skills ? user.skills.join(", ") : ""
+    user?.skills ? user.skills.join(",") : ""
   );
    const [error,setError] = useState("")
 
@@ -29,7 +29,8 @@ const EditProfile = () => {
         { withCredentials: true }
       );
       dispatch(addUser(response.data?.data));
-      toast.success("Profile updated successfully!", { autoClose: 2000 });
+      alert("Profile updated successfully!")
+      
     } catch (error) {
       setError(error?.response?.data)
       console.error("Error updating profile:", error);
