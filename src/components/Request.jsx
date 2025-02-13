@@ -2,21 +2,23 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BASE_URL } from "../utils/constants";
-import { addRequest } from "../utils/RequestSlice";
+import { addRequest, removeRequest } from "../utils/RequestSlice";
+import { addConnections } from "../utils/ConnectionSlice"; // Import for updating connections
 
 const Request = () => {
   const dispatch = useDispatch();
-  const Request = useSelector((state) => state.request.requests);
+  const requests = useSelector((state) => state.request.requests);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState(""); // New state for success messages
 
   const fetchRequest = async () => {
     try {
-      const response = await axios.get(BASE_URL + "/user/requests", {
+      const response = await axios.get(`${BASE_URL}/user/requests`, {
         withCredentials: true,
       });
-
       dispatch(addRequest(response.data.data));
+      setError(""); // Clear any previous error
     } catch (error) {
       setError("Failed to load requests");
       console.error(error);
@@ -25,13 +27,37 @@ const Request = () => {
     }
   };
 
-  useEffect(() => {
-    if (!Request || Request.length === 0) {
-      fetchRequest();
-    } else {
-      setLoading(false);
+  const reviewRequest = async (status, _id) => {
+    try {
+      await axios.post(
+        `${BASE_URL}/request/review/${status}/${_id}`,
+        {},
+        { withCredentials: true }
+      );
+
+      dispatch(removeRequest(_id));
+
+      // If accepted, fetch updated connections
+      if (status === "accepted") {
+        const response = await axios.get(`${BASE_URL}/user/connections`, {
+          withCredentials: true,
+        });
+        dispatch(addConnections(response.data.data));
+      }
+
+      // Show success message
+      setSuccessMessage(`Request ${status === "accepted" ? "accepted" : "rejected"} successfully`);
+      setError(""); // Clear any previous errors
+    } catch (error) {
+      setError("Failed to review request");
     }
-  }, [Request, dispatch]);
+  };
+
+  useEffect(() => {
+    if (requests.length === 0) {
+      fetchRequest();
+    }
+  }, []);
 
   return (
     <div className="container mx-auto my-16 px-6">
@@ -39,15 +65,22 @@ const Request = () => {
         My Requests
       </h2>
 
+      {/* Success Message */}
+      {successMessage && (
+        <p className="text-center text-green-500 text-lg">{successMessage}</p>
+      )}
+
+      {/* Error Message */}
+      {error && <p className="text-center text-red-500 text-lg">{error}</p>}
+
+      {/* Loading State */}
       {loading ? (
         <p className="text-center text-gray-400 text-lg">Loading requests...</p>
-      ) : error ? (
-        <p className="text-center text-red-500 text-lg">{error}</p>
-      ) : Request.length === 0 ? (
+      ) : requests.length === 0 ? (
         <p className="text-center text-gray-400 text-lg">No requests found.</p>
       ) : (
         <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-6">
-          {Request.map((user) => (
+          {requests.map((user) => (
             <div
               key={user._id}
               className="bg-gray-800 shadow-lg rounded-xl p-6 flex items-center space-x-4 hover:shadow-2xl transition duration-300"
@@ -71,10 +104,16 @@ const Request = () => {
                   Skill: {user.fromUserId?.skills?.join(", ") || "N/A"}
                 </p>
                 <div className="mt-3 flex space-x-3">
-                  <button className="bg-green-500 hover:bg-green-600 text-white text-sm px-4 py-2 rounded-md transition">
+                  <button
+                    onClick={() => reviewRequest("accepted", user._id)}
+                    className="bg-green-500 hover:bg-green-600 text-white text-sm px-4 py-2 rounded-md transition"
+                  >
                     Accept
                   </button>
-                  <button className="bg-red-500 hover:bg-red-600 text-white text-sm px-4 py-2 rounded-md transition">
+                  <button
+                    onClick={() => reviewRequest("rejected", user._id)}
+                    className="bg-red-500 hover:bg-red-600 text-white text-sm px-4 py-2 rounded-md transition"
+                  >
                     Decline
                   </button>
                 </div>

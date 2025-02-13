@@ -7,14 +7,15 @@ import { BASE_URL } from "../utils/constants";
 
 function FeedData() {
   const dispatch = useDispatch();
-  const feeds = useSelector((store) => store.feed);
+  const feeds = useSelector((store) => store.feed.feeds);
 
   const fetchFeedData = async () => {
     try {
       if (feeds?.length) return; // Prevents API call if feeds exist
 
-      const response = await axios.get(BASE_URL + "/feed", { withCredentials: true });
-    
+      const response = await axios.get(BASE_URL + "/feed", {
+        withCredentials: true,
+      });
 
       dispatch(addFeed(response.data.data)); // Ensure correct state update
     } catch (error) {
@@ -25,8 +26,6 @@ function FeedData() {
   useEffect(() => {
     fetchFeedData();
   }, []); // Re-run if `feeds` changes
-
-
 
   return (
     <div className="flex flex-col items-center my-16 gap-4 p-4">

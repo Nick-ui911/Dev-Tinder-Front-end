@@ -1,21 +1,21 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  requests: [], // Store the connections in an object
+  requests: [], // Store the requests in an array
 };
 
-const RequestSlice = createSlice({
+const requestSlice = createSlice({
   name: "request",
   initialState,
   reducers: {
     addRequest: (state, action) => {
-        state.requests = action.payload; // Store the fetched connections in `connections`
+      state.requests = action.payload; // Ensure payload is an array
     },
-    removeRequest: (state) => {
-        state.requests = []; // Clear the connections array (do not return null)
+    removeRequest: (state, action) => {
+      state.requests = state.requests.filter((val) => val._id !== action.payload);
     },
   },
 });
 
-export const { addRequest, removeRequest } = RequestSlice.actions;
-export default RequestSlice.reducer;
+export const { addRequest, removeRequest } = requestSlice.actions;
+export default requestSlice.reducer;
