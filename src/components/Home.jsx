@@ -23,7 +23,7 @@ const Home = () => {
     } catch (error) {
       if (error.response?.status === 401) {
         // Corrected error handling
-        navigate("/login");
+        navigate("/");
       }
     }
   };

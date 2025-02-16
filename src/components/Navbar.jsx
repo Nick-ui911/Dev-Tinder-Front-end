@@ -1,37 +1,50 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { removeUser } from "../utils/UserSlice";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
-
+import { FiMessageCircle, FiUser, FiHome } from "react-icons/fi"; // Import icons
 
 const Navbar = () => {
   const user = useSelector((store) => store.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleLogout = async() => {
- try {
-  await axios.post(BASE_URL + "/logout",{},{ withCredentials: true })
-
-  dispatch(removeUser()); // Dispatch logout action
-  return navigate("/login")
- } catch (error) {
-  console.error(error);
-  
- }
+  const handleLogout = async () => {
+    try {
+      await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
+      dispatch(removeUser());
+      navigate("/login");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-
   return (
-    <div className="navbar bg-base-100 shadow-sm fixed top-0 w-full h-16 z-10">
-      <div className="flex-1">
-        <Link to="/feeddata" className="btn btn-ghost text-xl">
-          DevTinder
+    <div className="fixed top-0 w-full h-16 flex items-center justify-between px-6 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 shadow-md z-10">
+      {/* Left - Logo */}
+      <Link to="/feeddata" className="text-white text-2xl font-bold">
+        DevTinder
+      </Link>
+
+      {/* Center - Navigation Icons */}
+      <div className="flex items-center gap-6 text-white text-2xl">
+        <Link to="/feeddata" className="hover:text-gray-200 transition">
+          <FiHome />
         </Link>
+        <Link to="/messages" className="hover:text-gray-200 transition">
+          <FiMessageCircle />
+        </Link>
+        {user && (
+          <Link to="/profile" className="hover:text-gray-200 transition">
+            <FiUser />
+          </Link>
+        )}
       </div>
-      <div className="flex gap-2">
+
+      {/* Right - Profile or Login */}
+      <div className="flex items-center">
         {user ? (
           <div className="dropdown dropdown-end">
             <div
@@ -51,22 +64,21 @@ const Navbar = () => {
             </div>
             <ul
               tabIndex={0}
-              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+              className="menu menu-sm dropdown-content bg-gray-900 rounded-box z-10 mt-3 w-52 p-2 shadow-lg"
             >
-             
               <li>
                 <Link to="/profile" className="text-sm font-semibold">
-                 Show Profile
+                  Show Profile
                 </Link>
               </li>
               <li>
                 <Link to="/connections" className="text-sm font-semibold">
-                 Show Connections
+                  Show Connections
                 </Link>
               </li>
               <li>
                 <Link to="/request" className="text-sm font-semibold">
-                 Request
+                  Request
                 </Link>
               </li>
               <li>
@@ -77,7 +89,10 @@ const Navbar = () => {
             </ul>
           </div>
         ) : (
-          <Link to="/login" className="btn btn-primary">
+          <Link
+            to="/login"
+            className=" btn glass bg-gray-800 text-red-500 px-4 py-2 rounded-full shadow-lg hover:bg-gray-900 transition"
+          >
             Login
           </Link>
         )}

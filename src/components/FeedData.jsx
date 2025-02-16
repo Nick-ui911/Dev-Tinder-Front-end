@@ -8,6 +8,7 @@ import { BASE_URL } from "../utils/constants";
 function FeedData() {
   const dispatch = useDispatch();
   const feeds = useSelector((store) => store.feed.feeds);
+    const user = useSelector((store) => store.user);
 
   const fetchFeedData = async () => {
     try {
@@ -29,7 +30,9 @@ function FeedData() {
 
   return (
     <div className="flex flex-col items-center my-16 gap-4 p-4">
-      {feeds?.length > 0 ? (
+      {!user ? (
+        <p className="text-red-500">Login first</p> // Show login message if user is not authenticated
+      ) : feeds?.length > 0 ? (
         feeds.map((feed, index) => <FeedCard key={index} {...feed} />)
       ) : (
         <p className="text-gray-500">No feeds available</p>

@@ -11,6 +11,7 @@ import ForgotpasswordPage from "./components/ForgotpasswordPage";
 import EditProfile from "./components/EditProfile";
 import Connections from "./components/Connections";
 import Request from "./components/Request";
+import LandingPage from "./components/LandingPage";
 
 const App = () => {
   return (
@@ -18,12 +19,16 @@ const App = () => {
       <BrowserRouter basename="/">
         <Routes>
           <Route path="/" element={<Home />}>
+            <Route path="/" element={<LandingPage/>} />
             <Route path="/login" element={<Login />} />
             <Route path="/feeddata" element={<FeedData />} />
             <Route path="/profileEdit" element={<EditProfile />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/ForgotPasswordPage" element={<ForgotpasswordPage />} />
+            <Route
+              path="/ForgotPasswordPage"
+              element={<ForgotpasswordPage />}
+            />
             <Route path="/connections" element={<Connections />} />
             <Route path="/request" element={<Request />} />
           </Route>
