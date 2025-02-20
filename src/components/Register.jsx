@@ -34,8 +34,6 @@ const Register = () => {
 
       dispatch(addUser(response.data.data));
       navigate("/profile");
-
-      console.log("Response:", response.data);
     } catch (error) {
       console.error("Error:", error);
     }
