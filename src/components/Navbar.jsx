@@ -4,7 +4,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { removeUser } from "../utils/UserSlice";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
-import { FiMessageCircle, FiUser, FiHome } from "react-icons/fi"; // Import icons
+import {  FiUser, FiHome } from "react-icons/fi"; // Import icons
+import { IoMdContacts } from "react-icons/io";
+
 
 const Navbar = () => {
   const user = useSelector((store) => store.user);
@@ -30,11 +32,11 @@ const Navbar = () => {
 
       {/* Center - Navigation Icons */}
       <div className="flex items-center gap-6 text-white text-2xl">
-        <Link to="/feeddata" className="hover:text-gray-200 transition">
+        <Link to="/" className="hover:text-gray-200 transition">
           <FiHome />
         </Link>
-        <Link to="/messages" className="hover:text-gray-200 transition">
-          <FiMessageCircle />
+        <Link to="/contact" className="hover:text-gray-200 transition">
+        <IoMdContacts />
         </Link>
         {user && (
           <Link to="/profile" className="hover:text-gray-200 transition">

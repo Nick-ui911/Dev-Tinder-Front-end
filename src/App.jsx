@@ -12,6 +12,8 @@ import EditProfile from "./components/EditProfile";
 import Connections from "./components/Connections";
 import Request from "./components/Request";
 import LandingPage from "./components/LandingPage";
+import About from "./components/About";
+import Contact from "./components/Contact";
 
 const App = () => {
   return (
@@ -25,6 +27,8 @@ const App = () => {
             <Route path="/profileEdit" element={<EditProfile />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
             <Route
               path="/ForgotPasswordPage"
               element={<ForgotpasswordPage />}

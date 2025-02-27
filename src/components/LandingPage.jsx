@@ -1,9 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import bgimage from "../assets/bg2.png";
-
+import { useSelector } from "react-redux";
 const LandingPage = () => {
   const navigate = useNavigate();
+  const user = useSelector((store) => store.user);
 
   return (
     <div
@@ -22,12 +23,15 @@ const LandingPage = () => {
         <h1 className="text-4xl md:text-6xl font-bold mb-6">
           Start something epic.
         </h1>
-        <button
-          onClick={() => navigate("/register")}
-          className="bg-gray-800 text-red-600 text-lg font-semibold px-6 py-3 rounded-full shadow-lg hover:bg-gray-900 transition"
-        >
-          Create account
-        </button>
+         {/* Hide register button if user is logged in */}
+         {!user && (
+          <button
+            onClick={() => navigate("/register")}
+            className="bg-gray-800 text-red-600 text-lg font-semibold px-6 py-3 rounded-full shadow-lg hover:bg-gray-900 transition"
+          >
+            Create account
+          </button>
+        )}
       </div>
     </div>
   );
