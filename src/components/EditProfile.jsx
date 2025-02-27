@@ -10,26 +10,18 @@ const EditProfile = () => {
   const dispatch = useDispatch();
 
   const [name, setName] = useState(user?.name || "");
+  const [PhotoUrl, setPhotoUrl] = useState(user?.PhotoUrl || "");
   const [age, setAge] = useState(user?.age || "");
   const [gender, setGender] = useState(user?.gender || "");
   const [skills, setSkills] = useState(user?.skills ? user.skills.join(",") : "");
   const [error, setError] = useState("");
-  const [preview, setPreview] = useState(user?.PhotoUrl || "https://via.placeholder.com/150");
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const objectUrl = URL.createObjectURL(file);
-      setPreview(objectUrl);
-    }
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.patch(
-        `${BASE_URL}/profile/edit`,
-        { name, age, gender, skills: skills.split(", ") },
+        BASE_URL + "/profile/edit",
+        { name, PhotoUrl, age, gender, skills: skills.split(", ") },
         { withCredentials: true }
       );
       dispatch(addUser(response.data?.data));
@@ -45,9 +37,7 @@ const EditProfile = () => {
       <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg w-full max-w-sm md:max-w-md lg:max-w-lg">
         <h2 className="text-2xl font-bold mb-4 text-gray-900">Edit Profile</h2>
         {error && <span className="text-red-500 text-sm">{error}</span>}
-
         <form onSubmit={handleSubmit}>
-          {/* Name */}
           <label className="block mb-2 text-gray-900">Name:</label>
           <input
             type="text"
@@ -57,19 +47,14 @@ const EditProfile = () => {
             required
           />
 
-          {/* Profile Photo Upload */}
-          <label className="block mb-2 text-gray-900">Profile Picture:</label>
-          <div className="flex items-center gap-4 mb-4">
-            <img className="w-20 h-20 rounded-full border-2 border-gray-400" src={preview} alt="Profile Preview" />
-            <input
-              type="file"
-              className="file-input file-input-bordered w-full max-w-xs"
-              accept="image/*"
-              onChange={handleFileChange}
-            />
-          </div>
+          <label className="block mb-2 text-gray-900">Photo URL:</label>
+          <input
+            type="text"
+            value={PhotoUrl}
+            onChange={(e) => setPhotoUrl(e.target.value)}
+            className="w-full p-2 mb-4 border text-gray-900 rounded-lg border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
 
-          {/* Age */}
           <label className="block mb-2 text-gray-900">Age:</label>
           <input
             type="number"
@@ -78,7 +63,6 @@ const EditProfile = () => {
             className="w-full p-2 mb-4 text-gray-900 border rounded-lg border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
 
-          {/* Gender */}
           <label className="block mb-2 text-gray-900">Gender:</label>
           <select
             value={gender}
@@ -91,7 +75,6 @@ const EditProfile = () => {
             <option value="Other">Other</option>
           </select>
 
-          {/* Skills */}
           <label className="block mb-2 text-gray-900">Skills (comma-separated):</label>
           <input
             type="text"
@@ -100,7 +83,6 @@ const EditProfile = () => {
             className="w-full p-2 mb-4 border rounded-lg text-gray-900 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
 
-          {/* Save Changes Button */}
           <button
             type="submit"
             className="w-full bg-blue-600 py-2 rounded-lg text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -109,13 +91,11 @@ const EditProfile = () => {
           </button>
         </form>
       </div>
-
-      {/* Preview Card */}
       <FeedCard
         name={name}
         age={age}
         gender={gender}
-        PhotoUrl={preview}
+        PhotoUrl={PhotoUrl}
         skills={skills.split(", ")}
       />
     </div>
