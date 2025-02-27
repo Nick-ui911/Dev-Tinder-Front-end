@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import bgimage from "../assets/bg2.png";
+import bgimage from "../assets/bg.png";
 import { useSelector } from "react-redux";
 const LandingPage = () => {
   const navigate = useNavigate();
