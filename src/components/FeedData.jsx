@@ -30,20 +30,24 @@ function FeedData() {
   }, []);
 
   const handleSwipe = () => {
-    setIndex((prevIndex) => (prevIndex + 1) % feeds.length); // Loop back when reaching the end
+    if (index < feeds.length - 1) {
+      setIndex((prevIndex) => prevIndex + 1);
+    } else {
+      setIndex(null); // Set index to null when all feeds are swiped
+    }
   };
-
   return (
     <div className="flex justify-center items-center h-screen">
       {!user ? (
         <p className="text-red-500">Login first</p>
-      ) : feeds.length > 0 ? (
+      ) : feeds.length > 0 && index !== null ? (
         <FeedCard key={feeds[index]._id} {...feeds[index]} onSwipe={handleSwipe} />
       ) : (
-        <p className="text-gray-500">No feeds available</p>
+        <p className="text-gray-500 text-xl font-bold">🎉 No more feeds available! 🎉</p>
       )}
     </div>
   );
+  
 }
 
 export default FeedData;

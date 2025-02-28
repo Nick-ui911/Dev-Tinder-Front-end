@@ -27,7 +27,7 @@ const Navbar = () => {
     <div className="fixed top-0 w-full h-16 flex items-center justify-between px-6 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 shadow-md z-10">
       {/* Left - Logo */}
       <Link to="/feeddata" className="text-white text-2xl font-bold">
-        DevTinder
+        DevWorld
       </Link>
 
       {/* Center - Navigation Icons */}
