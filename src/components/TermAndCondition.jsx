@@ -40,7 +40,7 @@ const TermsAndConditions = () => {
       
       <h2 className="text-2xl font-semibold mt-4">Contact Us</h2>
       <p className="text-white">
-        If you have any questions regarding these terms, please contact us at support@devworld.com.
+        If you have any questions regarding these terms, please contact us at nbaghel392@gmail.com.
       </p>
     </div>
   );

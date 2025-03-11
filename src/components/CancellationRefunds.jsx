@@ -31,7 +31,7 @@ const CancellationRefund = () => {
       
       <h2 className="text-2xl font-semibold mt-4">Contact Us</h2>
       <p>
-        If you have any questions regarding cancellations or refunds, please contact us at support@devworld.com.
+        If you have any questions regarding cancellations or refunds, please contact us at nbaghel392@gmail.com.
       </p>
     </div>
   );
