@@ -12,6 +12,7 @@ const Footer = () => {
           <Link to={"/contact"} className="hover:text-blue-400 transition-colors duration-300">Contact</Link>
           <Link to={"/"} className="hover:text-blue-400 transition-colors duration-300">Home</Link>
           <Link to={"/register"} className="hover:text-blue-400 transition-colors duration-300">Register</Link>
+          <Link to={"/privacy"} className="hover:text-blue-400 transition-colors duration-300">PrivacyPolicy</Link>
         </nav>
 
         {/* Social Icons */}

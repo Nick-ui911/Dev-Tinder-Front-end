@@ -14,6 +14,7 @@ import Request from "./components/Request";
 import LandingPage from "./components/LandingPage";
 import About from "./components/About";
 import Contact from "./components/Contact";
+import Privacy from "./components/Privacy";
 
 const App = () => {
   return (
@@ -29,6 +30,7 @@ const App = () => {
             <Route path="/register" element={<Register />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/privacy" element={<Privacy />} />
             <Route
               path="/ForgotPasswordPage"
               element={<ForgotpasswordPage />}
