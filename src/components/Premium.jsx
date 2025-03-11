@@ -29,7 +29,11 @@ const Premium = () => {
         theme: {
           color: "#3399cc",
         },
-        callback_url: "https://devworld.in/",
+        handler: function (response) {
+            console.log("Payment Successful", response);
+            window.location.href = "/"; // 🔥 Redirect to home after payment
+          },
+       
       };
 
       var rzp1 = new window.Razorpay(options);
