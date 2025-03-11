@@ -17,7 +17,8 @@ const Premium = () => {
         amount,
         currency,
         name: "DevWorld", //your business name
-        description: "Test Transaction",
+        description: "Transaction",
+        order_id:orderId,
         prefill: {
           //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
           name: notes.name, //your customer's name
@@ -29,10 +30,10 @@ const Premium = () => {
         theme: {
           color: "#3399cc",
         },
-        handler: function (response) {
-            console.log("Payment Successful", response);
-            window.location.href = "/"; // 🔥 Redirect to home after payment
-          },
+        // handler: function (response) {
+        //     console.log("Payment Successful", response);
+        //     window.location.href = "/"; // 🔥 Redirect to home after payment
+        //   },
        
       };
 
