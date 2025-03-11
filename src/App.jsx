@@ -15,6 +15,8 @@ import LandingPage from "./components/LandingPage";
 import About from "./components/About";
 import Contact from "./components/Contact";
 import Privacy from "./components/Privacy";
+import TermsAndConditions from "./components/TermAndCondition";
+import CancellationRefund from "./components/CancellationRefunds";
 
 const App = () => {
   return (
@@ -31,6 +33,8 @@ const App = () => {
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/privacy" element={<Privacy />} />
+            <Route path="/termandconditions" element={<TermsAndConditions/>} />
+            <Route path="/cancellationrefund" element={<CancellationRefund/>} />
             <Route
               path="/ForgotPasswordPage"
               element={<ForgotpasswordPage />}
