@@ -17,7 +17,7 @@ const Premium = () => {
         amount,
         currency,
         name: "DevWorld", //your business name
-        order_id: orderId,
+        description: "Test Transaction",
         prefill: {
           //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
           name: notes.name, //your customer's name
@@ -29,6 +29,7 @@ const Premium = () => {
         theme: {
           color: "#3399cc",
         },
+        callback_url: "https://devworld.in/",
       };
 
       var rzp1 = new window.Razorpay(options);
