@@ -35,7 +35,7 @@ const Privacy = () => {
       
       <h2 className="text-2xl font-semibold mt-4">Contact Us</h2>
       <p className=" text-white">
-        If you have any questions, feel free to reach out to us at support@devworld.com.
+        If you have any questions, feel free to reach out to us at nbaghel392@gmail.com.
       </p>
     </div>
   );
