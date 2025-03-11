@@ -79,6 +79,11 @@ const Navbar = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/premium" className="text-sm font-semibold">
+                  Get Premium
+                </Link>
+              </li>
+              <li>
                 <Link to="/request" className="text-sm font-semibold">
                   Request
                 </Link>

@@ -8,14 +8,15 @@ const Footer = () => {
         
         {/* Navigation Links */}
         <nav className="grid grid-cols-2 md:flex md:flex-wrap justify-center md:justify-start gap-4 text-sm md:text-base">
+          
+        <Link to="/" className="hover:text-blue-400 transition-colors duration-300">Home</Link>
           <Link to="/about" className="hover:text-blue-400 transition-colors duration-300">About Us</Link>
           <Link to="/contact" className="hover:text-blue-400 transition-colors duration-300">Contact</Link>
-          <Link to="/" className="hover:text-blue-400 transition-colors duration-300">Home</Link>
           <Link to="/register" className="hover:text-blue-400 transition-colors duration-300">Register</Link>
           <Link to="/privacy" className="hover:text-blue-400 transition-colors duration-300">Privacy Policy</Link>
           <Link to="/termandconditions" className="hover:text-blue-400 transition-colors duration-300">Terms & Conditions</Link>
           <Link to="/cancellationrefund" className="hover:text-blue-400 transition-colors duration-300">Cancellation & Refund</Link>
-          <Link to="/shippinganddelivery" className="hover:text-blue-400 transition-colors duration-300">Shipping Policy</Link>
+          <Link to="/shipping" className="hover:text-blue-400 transition-colors duration-300">Shipping Policy</Link>
         </nav>
 
         {/* Social Icons */}

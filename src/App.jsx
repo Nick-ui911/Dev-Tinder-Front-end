@@ -17,7 +17,8 @@ import Contact from "./components/Contact";
 import Privacy from "./components/Privacy";
 import TermsAndConditions from "./components/TermAndCondition";
 import CancellationRefund from "./components/CancellationRefunds";
-import ShippingPolicy from "./components/Shipping";
+import Shipping from "./components/Shipping";
+import Premium from "./components/Premium";
 
 const App = () => {
   return (
@@ -36,13 +37,14 @@ const App = () => {
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/termandconditions" element={<TermsAndConditions/>} />
             <Route path="/cancellationrefund" element={<CancellationRefund/>} />
-            <Route path="/shippinganddelivery" element={<ShippingPolicy/>} />
+            <Route path="/shipping" element={<Shipping/>} />
             <Route
               path="/ForgotPasswordPage"
               element={<ForgotpasswordPage />}
             />
             <Route path="/connections" element={<Connections />} />
             <Route path="/request" element={<Request />} />
+            <Route path="/premium" element={<Premium />} />
           </Route>
         </Routes>
       </BrowserRouter>
