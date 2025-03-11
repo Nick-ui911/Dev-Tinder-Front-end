@@ -2,7 +2,7 @@ import React from "react";
 
 const CancellationRefund = () => {
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-gray-800 text-white shadow-lg rounded-2xl">
+    <div className=" my-18 max-w-3xl mx-auto p-6 bg-gray-800 text-white shadow-lg rounded-2xl">
       <h1 className="text-3xl font-bold mb-4">Cancellation and Refund Policy</h1>
       <p className="mb-4">
         At DevWorld, we strive to provide the best experience for our users. This policy outlines the conditions for cancellations and refunds.

@@ -17,6 +17,7 @@ import Contact from "./components/Contact";
 import Privacy from "./components/Privacy";
 import TermsAndConditions from "./components/TermAndCondition";
 import CancellationRefund from "./components/CancellationRefunds";
+import ShippingPolicy from "./components/Shipping";
 
 const App = () => {
   return (
@@ -35,6 +36,7 @@ const App = () => {
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/termandconditions" element={<TermsAndConditions/>} />
             <Route path="/cancellationrefund" element={<CancellationRefund/>} />
+            <Route path="/shipping" element={<ShippingPolicy/>} />
             <Route
               path="/ForgotPasswordPage"
               element={<ForgotpasswordPage />}
