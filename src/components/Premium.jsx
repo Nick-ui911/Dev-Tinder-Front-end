@@ -17,9 +17,7 @@ const Premium = () => {
         amount,
         currency,
         name: "DevWorld", //your business name
-        description: "Test Transaction",
         order_id: orderId,
-        callback_url: "https://eneqd3r9zrjok.x.pipedream.net/",
         prefill: {
           //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
           name: notes.name, //your customer's name
