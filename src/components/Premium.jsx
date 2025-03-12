@@ -5,6 +5,7 @@ import SuccessPage from "./SuccessPage";
 
 const Premium = () => {
   const [premium, setPremium] = useState(false);
+  const [membershipType, setMembershipType] = useState(null);
 
   const verifyPremium = async () => {
     const response = await axios.get(BASE_URL + "/premium/verify", {
@@ -12,6 +13,7 @@ const Premium = () => {
     });
     if (response.data.isPremium) {
       setPremium(true);
+      setMembershipType(response.data.membershipType);
     }
   };
   useEffect(() => {
@@ -19,6 +21,9 @@ const Premium = () => {
   }, []);
 
   const handleClick = async (type) => {
+    if (premium) {
+      return; // Prevent payment if already premium
+    }
     try {
       const order = await axios.post(
         BASE_URL + "/payment/create",
@@ -56,7 +61,7 @@ const Premium = () => {
   };
 
   if(premium){
-   return <SuccessPage/>
+   return <SuccessPage membershipType={membershipType}/>
   }
   return (
     <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center p-6">
@@ -67,7 +72,7 @@ const Premium = () => {
           <p className="text-gray-400 mt-2">
             Basic access with essential features.
           </p>
-          <p className="text-3xl font-bold text-blue-400 mt-4">$0.5/month</p>
+          <p className="text-3xl font-bold text-blue-400 mt-4">$0.1/month</p>
           <ul className="mt-4 space-y-2">
             <li className="flex items-center gap-2">
               ✅ Access to standard features
@@ -87,7 +92,7 @@ const Premium = () => {
         <div className="bg-yellow-500 rounded-2xl shadow-lg p-6 hover:scale-105 transition-transform text-gray-900">
           <h2 className="text-2xl font-bold">Gold Plan</h2>
           <p className="mt-2">Premium access with exclusive features.</p>
-          <p className="text-3xl font-bold mt-4">$1/month</p>
+          <p className="text-3xl font-bold mt-4">$0.5/month</p>
           <ul className="mt-4 space-y-2">
             <li className="flex items-center gap-2">
               ✅ All Silver Plan benefits
