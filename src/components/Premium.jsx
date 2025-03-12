@@ -1,8 +1,23 @@
 import axios from "axios";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../utils/constants";
+import SuccessPage from "./SuccessPage";
 
 const Premium = () => {
+  const [premium, setPremium] = useState(false);
+
+  const verifyPremium = async () => {
+    const response = await axios.post(BASE_URL + "/premium/verify", {
+      withCredentials: true,
+    });
+    if (response.data.isPremium) {
+      setPremium(true);
+    }
+  };
+  useEffect(() => {
+    verifyPremium();
+  }, []);
+
   const handleClick = async (type) => {
     try {
       const order = await axios.post(
@@ -18,7 +33,7 @@ const Premium = () => {
         currency,
         name: "DevWorld", //your business name
         description: "Transaction",
-        order_id:orderId,
+        order_id: orderId,
         prefill: {
           //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
           name: notes.name, //your customer's name
@@ -30,11 +45,7 @@ const Premium = () => {
         theme: {
           color: "#3399cc",
         },
-        // handler: function (response) {
-        //     console.log("Payment Successful", response);
-        //     window.location.href = "/"; // 🔥 Redirect to home after payment
-        //   },
-       
+        handler: verifyPremium,
       };
 
       var rzp1 = new window.Razorpay(options);
@@ -43,6 +54,10 @@ const Premium = () => {
       console.error(error);
     }
   };
+
+  if(premium){
+   return <SuccessPage/>
+  }
   return (
     <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center p-6">
       <div className="max-w-4xl w-full grid md:grid-cols-2 gap-6">
