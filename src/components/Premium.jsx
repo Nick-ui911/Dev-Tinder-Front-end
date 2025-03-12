@@ -7,7 +7,7 @@ const Premium = () => {
   const [premium, setPremium] = useState(false);
 
   const verifyPremium = async () => {
-    const response = await axios.post(BASE_URL + "/premium/verify", {
+    const response = await axios.get(BASE_URL + "/premium/verify", {
       withCredentials: true,
     });
     if (response.data.isPremium) {
