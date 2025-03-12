@@ -19,7 +19,7 @@ import TermsAndConditions from "./components/TermAndCondition";
 import CancellationRefund from "./components/CancellationRefunds";
 import Shipping from "./components/Shipping";
 import Premium from "./components/Premium";
-import Chat from "./components/Chat";
+// import Chat from "./components/Chat";
 
 const App = () => {
   return (
@@ -39,7 +39,7 @@ const App = () => {
             <Route path="/termandconditions" element={<TermsAndConditions/>} />
             <Route path="/cancellationrefund" element={<CancellationRefund/>} />
             <Route path="/shipping" element={<Shipping/>} />
-            <Route path="/chat/:userId" element={<Chat/>} />
+            {/* <Route path="/chat/:userId" element={<Chat/>} /> */}
             <Route
               path="/ForgotPasswordPage"
               element={<ForgotpasswordPage />}
