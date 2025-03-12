@@ -26,10 +26,9 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    if (!user || !user._id) { // Ensure profile fetch runs when user data is missing
-      fetchProfile();
-    }
-  }, [user, dispatch]);
+    fetchProfile(); // Always fetch fresh profile data
+  }, []); // Runs only on mount
+  
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100 px-4">
