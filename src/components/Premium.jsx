@@ -18,7 +18,7 @@ const Premium = () => {
   };
   useEffect(() => {
     verifyPremium();
-  }, []);
+  }, [premium]);
 
   const handleClick = async (type) => {
     if (premium) {
