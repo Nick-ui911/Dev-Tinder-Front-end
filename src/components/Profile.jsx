@@ -26,7 +26,7 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    if (!user) {
+    if (!user || !user._id) { // Ensure profile fetch runs when user data is missing
       fetchProfile();
     }
   }, [user, dispatch]);

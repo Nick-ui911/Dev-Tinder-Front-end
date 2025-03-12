@@ -14,8 +14,6 @@ function FeedData() {
   useEffect(() => {
     const fetchFeedData = async () => {
       try {
-        if (feeds.length > 0) return; // Don't fetch again if data exists
-
         const response = await axios.get(BASE_URL + "/feed", {
           withCredentials: true,
         });
@@ -41,13 +39,18 @@ function FeedData() {
       {!user ? (
         <p className="text-red-500">Login first</p>
       ) : feeds.length > 0 && index !== null ? (
-        <FeedCard key={feeds[index]._id} {...feeds[index]} onSwipe={handleSwipe} />
+        <FeedCard
+          key={feeds[index]._id}
+          {...feeds[index]}
+          onSwipe={handleSwipe}
+        />
       ) : (
-        <p className="text-gray-500 text-xl font-bold">🎉 No more feeds available! 🎉</p>
+        <p className="text-gray-500 text-xl font-bold">
+          🎉 No more feeds available! 🎉
+        </p>
       )}
     </div>
   );
-  
 }
 
 export default FeedData;
