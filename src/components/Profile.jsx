@@ -4,10 +4,12 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { addUser } from "../utils/UserSlice";
 import { BASE_URL } from "../utils/constants";
+import { useLocation } from "react-router-dom";
 
 const Profile = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation(); 
   const user = useSelector((store) => store.user);
 
   const fetchProfile = async () => {
@@ -26,8 +28,10 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    fetchProfile(); // Always fetch fresh profile data
-  }, []); // Runs only on mount
+    if (location.pathname === "/profile") {
+      fetchProfile(); // Fetch profile only when visiting /profile
+    }
+  }, [location.pathname]);
   
 
   return (
