@@ -83,10 +83,12 @@ const Chat = () => {
 
     socket = createSocketConnection();
 
-    // Emit event to notify server that current user is online
+    // Emit event to notify server that current user is online  , {- It is used to send an event from client to server or server to client.
+    //- You can also send data along with the event.}
     socket.emit("userOnline", userId);
 
     // Listen for the updated online users list
+       // It is used to listen to the event coming from the server or client.
     socket.on("updateOnlineUsers", (onlineUsers) => {
       setOnlineUsers(onlineUsers);
     });
