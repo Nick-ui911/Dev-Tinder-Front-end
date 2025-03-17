@@ -79,7 +79,7 @@ const Contact = () => {
       <div className="mt-12 text-center">
         <h2 className="text-2xl font-semibold mb-4">Our Contact Details</h2>
         <p className="text-gray-700">📍 Satna, India</p>
-        <p className="text-gray-700">📧 nbaghel392@gmail.com.com</p>
+        <p className="text-gray-700">📧 nbaghel392@gmail.com</p>
         <p className="text-gray-700">📞 +91 6232716505</p>
       </div>
     </div>

@@ -8,7 +8,7 @@ const About = () => {
     <div className="min-h-screen bg-gray-100 text-gray-900 my-16">
       {/* Hero Section */}
       <section className="text-center py-12 px-6 bg-gray-800 text-white">
-        <h1 className="text-4xl font-bold mb-4">About DevTinder</h1>
+        <h1 className="text-4xl font-bold mb-4">About DevWorld</h1>
         <p className="text-lg max-w-2xl mx-auto">
           Connecting developers worldwide to collaborate, innovate, and build
           together.

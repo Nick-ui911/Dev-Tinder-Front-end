@@ -51,7 +51,7 @@ const Profile = () => {
             className="w-24 h-24 rounded-full border-4 border-blue-500 shadow-lg"
             src={
               user?.PhotoUrl ||
-              "https://images.unsplash.com/photo-1494790108377-be9c29b29330?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cHJvZmlsZSUyMHBpY3R1cmV8ZW58MHx8MHx8fDA%3D"
+              "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
             }
             alt="Profile"
           />
