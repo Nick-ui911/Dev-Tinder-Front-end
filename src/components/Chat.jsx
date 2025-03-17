@@ -5,13 +5,17 @@ import { createSocketConnection } from "../utils/socket";
 import { addConnections } from "../utils/ConnectionSlice";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
+import { Send } from "lucide-react";
+import EmojiPicker from "emoji-picker-react";
 
-let socket; // ✅ Global socket instance
+let socket;
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [connectionUser, setConnectionUser] = useState(null);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
   const { connectionUserId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -21,9 +25,8 @@ const Chat = () => {
 
   const userId = user?._id;
 
-  const messagesEndRef = useRef(null); // ✅ Ref for auto-scroll
+  const messagesEndRef = useRef(null);
 
-  // ✅ Fetch connection from API
   useEffect(() => {
     const foundConnection = connections.find(
       (connection) => connection._id === connectionUserId
@@ -47,7 +50,6 @@ const Chat = () => {
     }
   };
 
-  // ✅ Fetch Chat Messages from Backend
   const fetchChat = async () => {
     try {
       const res = await axios.get(BASE_URL + "/chat/" + connectionUserId, {
@@ -61,7 +63,7 @@ const Chat = () => {
           name: isCurrentUser ? "You" : msg?.senderId?.name || "Unknown User",
           date: msg?.date,
           time: msg?.time,
-          senderId: msg?.senderId?._id, // ✅ Add this line
+          senderId: msg?.senderId?._id,
         };
       });
 
@@ -75,11 +77,10 @@ const Chat = () => {
     fetchChat();
   }, []);
 
-  // ✅ Handle Socket Connection and Listen for Messages
   useEffect(() => {
     if (!userId || !connectionUser) return;
 
-    socket = createSocketConnection(); // Create socket connection
+    socket = createSocketConnection();
     socket.emit("joinChat", {
       name: user.name,
       userId,
@@ -88,25 +89,19 @@ const Chat = () => {
       date: new Date().toLocaleDateString(),
     });
 
-    // ✅ Listening to Incoming Messages
     socket.on("messageReceived", ({ name, text, time, date, senderId }) => {
-      setMessages((messages) => [
-        ...messages,
-        { name, text, time, date, senderId }, // ✅ Add senderId here too
-      ]);
+      setMessages((messages) => [...messages, { name, text, time, date, senderId }]);
     });
 
     return () => {
-      socket.disconnect(); // Cleanup on unmount
+      socket.disconnect();
     };
   }, [userId, connectionUser]);
 
-  // ✅ Auto-scroll to bottom when messages update
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // ✅ Send Message Function
   const sendMessage = () => {
     if (!newMessage) return;
 
@@ -122,40 +117,31 @@ const Chat = () => {
     setNewMessage("");
   };
 
-  // ✅ Send Message on "Enter" Key Press
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       sendMessage();
     }
   };
 
-  return (
-    <div className="flex flex-col h-screen bg-gray-800 text-white">
-      <div className="bg-gray-700 text-white p-4 flex items-center gap-3 sticky top-0 z-10 shadow-md">
-        <button
-          onClick={() => navigate("/connections")}
-          className="text-xl mr-3"
-        >
-          🔙
-        </button>
-        <div>
-          <h2 className="font-semibold text-lg">
-            {connectionUser?.name || "User Name"}
-          </h2>
-          <p className="text-sm opacity-75">Online</p>
-        </div>
-      </div>
+  const handleEmojiClick = (emoji) => {
+    setNewMessage((prevMessage) => prevMessage + emoji.emoji);
+  };
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+  return (
+    <div className="flex flex-col h-screen bg-gray-900 text-white">
+      <header className="bg-gray-800 p-4 flex items-center gap-3 sticky top-0 z-10 shadow-lg">
+        <button onClick={() => navigate("/connections")} className="text-xl mr-3">🔙</button>
+        <h2 className="font-semibold text-lg">{connectionUser?.name || "User Name"}</h2>
+      </header>
+
+      <main className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((msg, index) => (
           <div
             key={index}
-            className={`flex ${
-              msg.senderId === userId ? "justify-end" : "justify-start"
-            }`}
+            className={`flex ${msg.senderId === userId ? "justify-end" : "justify-start"}`}
           >
             <div
-              className={`max-w-xs md:max-w-md p-3 rounded-lg ${
+              className={`max-w-md p-3 rounded-lg ${
                 msg.senderId === userId
                   ? "bg-blue-500 text-black rounded-br-none"
                   : "bg-gray-700 text-white rounded-bl-none"
@@ -172,24 +158,24 @@ const Chat = () => {
           </div>
         ))}
         <div ref={messagesEndRef} />
-      </div>
+      </main>
 
-      <div className="bg-gray-800 p-4 sticky bottom-0 flex items-center gap-2 shadow-md">
+      <footer className="bg-gray-800 p-4 flex items-center gap-2 sticky bottom-0 shadow-md">
+        <button onClick={() => setShowEmojiPicker(!showEmojiPicker)}>😊</button>
+        {showEmojiPicker && <EmojiPicker onEmojiClick={handleEmojiClick} />}
+
         <input
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           onKeyDown={handleKeyPress}
           type="text"
-          className="flex-1 p-2 border rounded-lg focus:outline-none"
+          className="flex-1 p-2 border rounded-lg focus:outline-none bg-gray-700 text-white"
           placeholder="Type a message..."
         />
-        <button
-          onClick={sendMessage}
-          className="bg-gray-900 text-white px-4 py-2 rounded-lg"
-        >
-          Send
+        <button onClick={sendMessage} className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700">
+          <Send size={24} color="white" />
         </button>
-      </div>
+      </footer>
     </div>
   );
 };
