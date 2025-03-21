@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BASE_URL } from "../utils/constants";
 import { addRequest, removeRequest } from "../utils/RequestSlice";
-import { addConnections } from "../utils/ConnectionSlice"; // Import for updating connections
+import { addConnections } from "../utils/ConnectionSlice"; 
 
 const Request = () => {
   const dispatch = useDispatch();
@@ -56,63 +56,64 @@ const Request = () => {
       fetchRequest();
     }
   }, []);
+
   useEffect(() => {
     if (successMessage) {
       const timer = setTimeout(() => {
-        setSuccessMessage(""); // Clear message after 2 seconds
+        setSuccessMessage(""); 
       }, 2000);
   
-      return () => clearTimeout(timer); // Cleanup function
+      return () => clearTimeout(timer);
     }
   }, [successMessage]);
 
   return (
-    <div className="container mx-auto my-16 px-6">
-      <h2 className="text-4xl font-extrabold text-center text-white mb-10">
-        My Requests
-      </h2>
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-900 to-gray-800 text-white my-10">
+      {/* Content Wrapper */}
+      <div className="flex-grow container mx-auto px-6 py-12">
+        <h2 className="text-4xl font-extrabold text-center mb-10">My Requests</h2>
 
-      {successMessage && (
-        <p className="text-center text-green-400 text-lg font-semibold bg-green-900 bg-opacity-20 p-3 rounded-lg shadow-md">
-          {successMessage}
-        </p>
-      )}
+        {successMessage && (
+          <p className="text-center text-green-400 text-lg font-semibold bg-green-900 bg-opacity-20 p-3 rounded-lg shadow-md">
+            {successMessage}
+          </p>
+        )}
 
-      {error && (
-        <p className="text-center text-red-400 text-lg font-semibold bg-red-900 bg-opacity-20 p-3 rounded-lg shadow-md">
-          {error}
-        </p>
-      )}
+        {error && (
+          <p className="text-center text-red-400 text-lg font-semibold bg-red-900 bg-opacity-20 p-3 rounded-lg shadow-md">
+            {error}
+          </p>
+        )}
 
-      {loading ? (
-        <p className="text-center text-gray-400 text-lg">Loading requests...</p>
-      ) : requests.length === 0 ? (
-        <p className="text-center text-gray-400 text-lg">No requests found.</p>
-      ) : (
-        <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-8">
-          {requests.map((user) => (
-            <div
-              key={user._id}
-              className="bg-gray-900 bg-opacity-30 backdrop-blur-lg shadow-lg rounded-2xl p-6 flex items-center space-x-6 hover:shadow-2xl transition duration-300"
-            >
-              <img
-                src={
-                  user.fromUserId?.PhotoUrl ||
-                  "https://www.shutterstock.com/image-vector/user-profile-icon-vector-avatar-600nw-2220431045.jpg"
-                }
-                alt={user.fromUserId?.name || "Unknown User"}
-                className="w-20 h-20 rounded-full border-4 border-gray-600 shadow-md"
-              />
-              <div className="flex flex-col">
-                <h3 className="text-lg font-bold text-white">
-                  {user.fromUserId?.name || "Unknown"}
-                </h3>
-                <p className="text-sm text-gray-400">
-                  {user.fromUserId?.gender || "Unknown"}
-                </p>
+        {loading ? (
+          <p className="text-center text-gray-400 text-lg">Loading requests...</p>
+        ) : requests.length === 0 ? (
+          <p className="text-center text-gray-400 text-lg">No requests found.</p>
+        ) : (
+          <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-8 max-w-6xl mx-auto">
+            {requests.map((user) => (
+              <div
+                key={user._id}
+                className="bg-gray-800 shadow-lg rounded-xl p-6 flex flex-col items-center transition transform hover:scale-105"
+              >
+                {/* Profile Picture */}
+                <img
+                  src={
+                    user.fromUserId?.PhotoUrl ||
+                    "https://www.shutterstock.com/image-vector/user-profile-icon-vector-avatar-600nw-2220431045.jpg"
+                  }
+                  alt={user.fromUserId?.name || "Unknown User"}
+                  className="w-20 h-20 rounded-full border-4 border-gray-600 shadow-md"
+                />
+
+                {/* User Info */}
+                <h3 className="text-lg font-bold mt-3">{user.fromUserId?.name || "Unknown"}</h3>
+                <p className="text-sm text-gray-400">{user.fromUserId?.gender || "Unknown"}</p>
                 <p className="text-sm text-gray-500">
                   Skills: {user.fromUserId?.skills?.join(", ") || "N/A"}
                 </p>
+
+                {/* Buttons */}
                 <div className="mt-4 flex space-x-4">
                   <button
                     onClick={() => reviewRequest("accepted", user._id)}
@@ -128,10 +129,12 @@ const Request = () => {
                   </button>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
+
+    
     </div>
   );
 };

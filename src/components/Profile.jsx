@@ -6,11 +6,13 @@ import { addUser } from "../utils/UserSlice";
 import { BASE_URL } from "../utils/constants";
 import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
+import { FaUserEdit } from "react-icons/fa";
+import { FiMail, FiStar } from "react-icons/fi";
 
 const Profile = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation(); 
+  const location = useLocation();
   const user = useSelector((store) => store.user);
 
   const fetchProfile = async () => {
@@ -30,36 +32,41 @@ const Profile = () => {
 
   useEffect(() => {
     if (location.pathname === "/profile") {
-      fetchProfile(); // Fetch profile only when visiting /profile
+      fetchProfile();
     }
   }, [location.pathname]);
-  
+
+  const skillsArray = Array.isArray(user?.skills)
+    ? user.skills.flatMap((skill) => skill.split(","))
+    : [];
+
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-900 px-4 text-white">
-      <motion.div 
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 px-6 text-white">
+      <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="relative w-full max-w-md p-6 shadow-xl rounded-2xl bg-gray-800 border border-gray-700 text-center transform transition-all hover:scale-105 hover:shadow-2xl"
+        className="relative w-full max-w-md p-8 shadow-2xl rounded-3xl bg-gray-850 border border-gray-700 text-center hover:scale-105 transition-all"
       >
-        
+        {/* Premium Badge */}
         {user?.isPremium && (
-          <motion.span 
+          <motion.span
             initial={{ scale: 0.8 }}
             animate={{ scale: 1 }}
             transition={{ duration: 0.3 }}
-            className="absolute top-3 right-3 bg-yellow-500 text-black px-3 py-1 text-xs font-bold rounded-full shadow-lg uppercase"
+            className="absolute top-4 right-4 bg-yellow-400 text-black px-4 py-1 text-xs font-bold rounded-full shadow-md flex items-center gap-1 uppercase"
           >
-            {user?.membershipType} Member
+            <FiStar className="text-black" /> {user?.membershipType} Member
           </motion.span>
         )}
 
+        {/* Profile Picture */}
         <div className="flex justify-center">
           <motion.img
             initial={{ scale: 0.8 }}
             animate={{ scale: 1 }}
             transition={{ duration: 0.3 }}
-            className="w-24 h-24 rounded-full border-4 border-blue-500 shadow-lg"
+            className="w-32 h-32 rounded-full border-4 border-blue-500 shadow-lg hover:shadow-2xl transition"
             src={
               user?.PhotoUrl ||
               "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
@@ -68,36 +75,48 @@ const Profile = () => {
           />
         </div>
 
-        <h2 className="mt-4 text-2xl font-bold flex items-center justify-center gap-2">
+        {/* User Info */}
+        <h2 className="mt-4 text-3xl font-extrabold flex items-center justify-center gap-2 text-white">
           {user?.name || "User Name"}
-          {user?.isPremium && (
-            <span className="w-6 h-6 flex items-center justify-center">
-              <svg
-                className="w-6 h-6 text-blue-500"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M9 16.17l-3.88-3.88-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"
-                  clipRule="evenodd"
-                ></path>
-              </svg>
-            </span>
-          )}
+          {user?.isPremium && <FiStar className="text-yellow-400 w-6 h-6" />}
         </h2>
-        <p className="text-gray-400">{user?.email || "user@example.com"}</p>
-        <p className="text-gray-400">Age : {user?.age || "N/A"}</p>
 
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="mt-6 px-5 py-2 bg-blue-500 text-white text-lg rounded-lg hover:bg-blue-600 transition-shadow shadow-md hover:shadow-lg"
-          onClick={() => navigate("/profileEdit")}
-        >
-          Edit Profile
-        </motion.button>
+        <p className="text-gray-300 flex items-center justify-center gap-2 mt-1 text-lg">
+          <FiMail /> {user?.email || "user@example.com"}
+        </p>
+
+        <div className="mt-4 space-y-3 text-gray-300 text-lg">
+          <p>
+            🎂 Age: <span className="font-semibold">{user?.age || "N/A"}</span>
+          </p>
+
+          {/* Skills Section */}
+          <div className="mt-4">
+            <h3 className="text-lg font-semibold text-gray-400">Skills</h3>
+            <div className="flex flex-wrap justify-center gap-2 mt-2">
+              {skillsArray.map((skill, index) => (
+                <span
+                  key={index}
+                  className="bg-blue-600 text-white px-3 py-1 rounded-full shadow-md hover:bg-blue-500 transition"
+                >
+                  {skill.trim()}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Edit Profile Button */}
+        <div className="flex justify-center mt-6">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="flex items-center gap-2 px-6 py-3 bg-blue-500 text-white text-lg font-bold rounded-full hover:bg-blue-600 transition-shadow shadow-md hover:shadow-lg"
+            onClick={() => navigate("/profileEdit")}
+          >
+            <FaUserEdit /> Edit Profile
+          </motion.button>
+        </div>
       </motion.div>
     </div>
   );
