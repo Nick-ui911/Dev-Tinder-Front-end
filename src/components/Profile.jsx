@@ -38,7 +38,7 @@ const Profile = () => {
 
   const skillsArray = Array.isArray(user?.skills)
     ? user.skills.flatMap((skill) => skill.split(","))
-    : [];
+    : ["Not specified"];
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 px-6 text-white">
