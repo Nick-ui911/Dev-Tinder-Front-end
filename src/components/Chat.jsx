@@ -5,7 +5,7 @@ import { createSocketConnection } from "../utils/socket";
 import { addConnections } from "../utils/ConnectionSlice";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
-import { Send } from "lucide-react";
+import { Send, ArrowLeft } from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
 
 let socket;
@@ -25,7 +25,6 @@ const Chat = () => {
   const connections = useSelector((state) => state.connection.connections);
 
   const userId = user?._id;
-
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -41,7 +40,7 @@ const Chat = () => {
 
   const fetchConnectionFromApi = async () => {
     try {
-      const res = await axios.get(BASE_URL + "/user/connections", {
+      const res = await axios.get(`${BASE_URL}/user/connections`, {
         withCredentials: true,
       });
       setConnectionUser(res.data.data);
@@ -53,7 +52,7 @@ const Chat = () => {
 
   const fetchChat = async () => {
     try {
-      const res = await axios.get(BASE_URL + "/chat/" + connectionUserId, {
+      const res = await axios.get(`${BASE_URL}/chat/${connectionUserId}`, {
         withCredentials: true,
       });
 
@@ -82,13 +81,7 @@ const Chat = () => {
     if (!userId || !connectionUser) return;
 
     socket = createSocketConnection();
-
-    // Emit event to notify server that current user is online  , {- It is used to send an event from client to server or server to client.
-    //- You can also send data along with the event.}
     socket.emit("userOnline", userId);
-
-    // Listen for the updated online users list
-       // It is used to listen to the event coming from the server or client.
     socket.on("updateOnlineUsers", (onlineUsers) => {
       setOnlineUsers(onlineUsers);
     });
@@ -142,9 +135,11 @@ const Chat = () => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-900 text-white overflow-hidden">
-      <header className="bg-gray-800 p-4 flex items-center gap-3 sticky top-0 z-10 shadow-lg">
-        <button onClick={() => navigate("/connections")} className="text-xl mr-3">🔙</button>
-        <h2 className="font-semibold text-lg">
+      <header className="bg-gray-800 p-4 flex items-center gap-3 shadow-lg">
+        <button onClick={() => navigate("/connections")} className="p-2 rounded-full hover:bg-gray-700">
+          <ArrowLeft size={24} color="white" />
+        </button>
+        <h2 className="font-semibold text-lg flex-1 text-center">
           {connectionUser?.name || "User Name"}
           {onlineUsers?.includes(connectionUserId) ? (
             <span className="text-green-500 ml-2">● Online</span>
@@ -158,7 +153,7 @@ const Chat = () => {
         {messages.map((msg, index) => (
           <div key={index} className={`flex ${msg.senderId === userId ? "justify-end" : "justify-start"}`}>
             <div
-              className={`max-w-md p-3 rounded-lg ${msg.senderId === userId ? "bg-blue-500 text-black rounded-br-none" : "bg-gray-700 text-white rounded-bl-none"}`}
+              className={`max-w-xs sm:max-w-md p-3 rounded-lg ${msg.senderId === userId ? "bg-blue-500 text-black rounded-br-none" : "bg-gray-700 text-white rounded-bl-none"}`}
             >
               <div className="text-xs opacity-50 mb-1">{msg.senderId === userId ? "You" : msg.name}</div>
               <div>{msg.text}</div>

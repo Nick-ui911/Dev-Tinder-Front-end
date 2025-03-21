@@ -39,7 +39,6 @@ const App = () => {
             <Route path="/termandconditions" element={<TermsAndConditions/>} />
             <Route path="/cancellationrefund" element={<CancellationRefund/>} />
             <Route path="/shipping" element={<Shipping/>} />
-            <Route path="/chat/:connectionUserId" element={<Chat/>} />
             <Route
               path="/ForgotPasswordPage"
               element={<ForgotpasswordPage />}
@@ -48,6 +47,7 @@ const App = () => {
             <Route path="/request" element={<Request />} />
             <Route path="/premium" element={<Premium />} />
           </Route>
+          <Route path="/chat/:connectionUserId" element={<Chat/>} />
         </Routes>
       </BrowserRouter>
     </Provider>
