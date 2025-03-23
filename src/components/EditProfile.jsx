@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
@@ -14,11 +14,47 @@ const EditProfile = () => {
   const [photoUrl, setPhotoUrl] = useState(user?.PhotoUrl || "");
   const [age, setAge] = useState(user?.age || "");
   const [gender, setGender] = useState(user?.gender || "");
-  const [skills, setSkills] = useState(user?.skills ? user.skills.join(",") : "");
+  const [skills, setSkills] = useState(
+    user?.skills ? user.skills.join(",") : ""
+  );
+  const [description, setDescription] = useState(user?.description || "");
+  const [location, setLocation] = useState(user?.location || "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
+
+  // this profile fetch is used to prefill input box of edit profile page when it reload also
+  // Fetch user profile on mount
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await axios.get(`${BASE_URL}/profile/view`, {
+          withCredentials: true,
+        });
+        dispatch(addUser(res.data));
+      } catch (error) {
+        if (error.response?.status === 401) {
+          navigate("/login");
+        } else {
+          console.error("Error fetching profile", error);
+        }
+      }
+    };
+    fetchProfile();
+  }, [dispatch, navigate]);
+  // Update local state when user data is available
+  useEffect(() => {
+    if (user) {
+      setName(user.name || "");
+      setPhotoUrl(user.PhotoUrl || "");
+      setAge(user.age || "");
+      setGender(user.gender || "");
+      setSkills(user.skills ? user.skills.join(", ") : "");
+      setDescription(user.description || "");
+      setLocation(user.location || "");
+    }
+  }, [user]);
 
   // Handle File Upload to Cloudinary
   const handleFileUpload = async (e) => {
@@ -50,7 +86,15 @@ const EditProfile = () => {
     try {
       const response = await axios.patch(
         BASE_URL + "/profile/edit",
-        { name, PhotoUrl: photoUrl, age, gender, skills: skills.split(", ") },
+        {
+          name,
+          PhotoUrl: photoUrl,
+          age,
+          gender,
+          skills: skills.split(", "),
+          description,
+          location,
+        },
         { withCredentials: true }
       );
       dispatch(addUser(response.data?.data));
@@ -69,9 +113,9 @@ const EditProfile = () => {
         <h2 className="text-3xl font-bold mb-6 text-center">Edit Profile</h2>
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
         {success && (
-          <motion.div 
-            initial={{ opacity: 0, y: -10 }} 
-            animate={{ opacity: 1, y: 0 }} 
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             className="text-green-400 text-center mb-4"
           >
@@ -85,7 +129,6 @@ const EditProfile = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="w-full p-2 mb-4 border rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500"
-            
           />
 
           {/* File Upload Input */}
@@ -101,7 +144,7 @@ const EditProfile = () => {
               Choose File
             </div>
           </div>
-          
+
           {loading && (
             <motion.div
               className="flex justify-center items-center"
@@ -146,6 +189,21 @@ const EditProfile = () => {
             type="text"
             value={skills}
             onChange={(e) => setSkills(e.target.value)}
+            className="w-full p-2 mb-4 border rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500"
+          />
+
+          <label className="block mb-2">Description</label>
+          <input
+            type="text"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="w-full p-2 mb-4 border rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500"
+          />
+          <label className="block mb-2">Location</label>
+          <input
+            type="text"
+            value={location}
+            onChange={(e) => setLocation(e.target.value)}
             className="w-full p-2 mb-4 border rounded-lg bg-gray-700 text-white focus:ring-2 focus:ring-blue-500"
           />
 

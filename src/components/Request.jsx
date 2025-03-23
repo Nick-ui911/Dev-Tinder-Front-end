@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { BASE_URL } from "../utils/constants";
 import { addRequest, removeRequest } from "../utils/RequestSlice";
 import { addConnections } from "../utils/ConnectionSlice"; 
+import Loader from "./Loader";
 
 const Request = () => {
   const dispatch = useDispatch();
@@ -86,7 +87,7 @@ const Request = () => {
         )}
 
         {loading ? (
-          <p className="text-center text-gray-400 text-lg">Loading requests...</p>
+          <Loader/>
         ) : requests.length === 0 ? (
           <p className="text-center text-gray-400 text-lg">No requests found.</p>
         ) : (

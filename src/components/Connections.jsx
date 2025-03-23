@@ -6,6 +6,7 @@ import { addConnections } from "../utils/ConnectionSlice";
 import { Link } from "react-router-dom";
 import { FiMessageSquare } from "react-icons/fi";
 import { AiOutlineUserDelete } from "react-icons/ai";
+import Loader from "./Loader";
 
 const Connections = () => {
   const dispatch = useDispatch();
@@ -53,7 +54,7 @@ const Connections = () => {
       <h2 className="text-3xl font-bold text-center mb-8">My Connections</h2>
 
       {loading ? (
-        <p className="text-center text-gray-400 animate-pulse">Loading connections...</p>
+        <Loader />
       ) : error ? (
         <p className="text-center text-red-500">{error}</p>
       ) : connections.length === 0 ? (
@@ -78,9 +79,13 @@ const Connections = () => {
                 />
 
                 {/* User Info */}
-                <h3 className="text-xl font-semibold mt-3">{user?.name || "Unknown User"}</h3>
+                <h3 className="text-xl font-semibold mt-3">
+                  {user?.name || "Unknown User"}
+                </h3>
                 <p className="text-gray-400 text-sm">{user?.gender || "N/A"}</p>
-                <p className="text-gray-300 text-sm">Skill: {user?.skill || "N/A"}</p>
+                <p className="text-gray-300 text-sm">
+                  Skill: {user?.skill || "N/A"}
+                </p>
 
                 {/* Buttons */}
                 <div className="flex gap-4 mt-4">

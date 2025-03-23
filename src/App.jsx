@@ -20,11 +20,13 @@ import CancellationRefund from "./components/CancellationRefunds";
 import Shipping from "./components/Shipping";
 import Premium from "./components/Premium";
 import Chat from "./components/Chat";
+import OfflineScreen from "./components/offlineScreen";
 
 const App = () => {
   return (
     <Provider store={Store}>
       <BrowserRouter basename="/">
+      <OfflineScreen/>
         <Routes>
           <Route path="/" element={<Home />}>
             <Route path="/" element={<LandingPage/>} />

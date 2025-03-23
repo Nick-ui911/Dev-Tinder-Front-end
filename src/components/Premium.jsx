@@ -2,46 +2,54 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../utils/constants";
 import SuccessPage from "./SuccessPage";
+import Loader from "./Loader"; // Import Loader
 
 const Premium = () => {
   const [premium, setPremium] = useState(false);
   const [membershipType, setMembershipType] = useState(null);
+  const [loading, setLoading] = useState(true); // Loading state
 
   const verifyPremium = async () => {
-    const response = await axios.get(BASE_URL + "/premium/verify", {
-      withCredentials: true,
-    });
-    if (response.data.isPremium) {
-      setPremium(true);
-      setMembershipType(response.data.membershipType);
+    try {
+      const response = await axios.get(BASE_URL + "/premium/verify", {
+        withCredentials: true,
+      });
+      if (response.data.isPremium) {
+        setPremium(true);
+        setMembershipType(response.data.membershipType);
+      }
+    } catch (error) {
+      console.error("Error verifying premium:", error);
+    } finally {
+      setLoading(false); // Hide loader after verification
     }
   };
+
   useEffect(() => {
     verifyPremium();
-  }, [premium]);
+  }, []);
 
   const handleClick = async (type) => {
-    if (premium) {
-      return; // Prevent payment if already premium
-    }
+    if (premium) return; // Prevent payment if already premium
+
+    setLoading(true); // Show loader during payment
     try {
       const order = await axios.post(
         BASE_URL + "/payment/create",
         { membershipType: type },
         { withCredentials: true }
       );
-      console.log(order);
+
       const { amount, keyId, currency, notes, orderId } = order.data;
       var options = {
         key: keyId,
         amount,
         currency,
-        name: "DevWorld", //your business name
+        name: "DevWorld",
         description: "Transaction",
         order_id: orderId,
         prefill: {
-          //We recommend using the prefill parameter to auto-fill customer's contact information especially their phone number
-          name: notes.name, //your customer's name
+          name: notes.name,
           email: notes.email,
         },
         notes: {
@@ -56,15 +64,22 @@ const Premium = () => {
       var rzp1 = new window.Razorpay(options);
       rzp1.open();
     } catch (error) {
-      console.error(error);
+      console.error("Payment error:", error);
+    } finally {
+      setLoading(false); // Hide loader after payment process
     }
   };
 
-  if(premium){
-   return <SuccessPage membershipType={membershipType}/>
+  if (loading) {
+    return <Loader />; // Show Loader when verifying or processing payment
   }
+
+  if (premium) {
+    return <SuccessPage membershipType={membershipType} />;
+  }
+
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-purple-900 text-white flex items-center justify-center p-6">
       <div className="max-w-4xl w-full grid md:grid-cols-2 gap-6">
         {/* Silver Plan */}
         <div className="bg-gray-800 rounded-2xl shadow-lg p-6 hover:scale-105 transition-transform">

@@ -1,12 +1,11 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { addUser } from "../utils/UserSlice";
 import { BASE_URL } from "../utils/constants";
-import { useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { FaUserEdit } from "react-icons/fa";
+import { FaUserEdit, FaMapMarkerAlt } from "react-icons/fa";
 import { FiMail, FiStar } from "react-icons/fi";
 
 const Profile = () => {
@@ -81,13 +80,30 @@ const Profile = () => {
           {user?.isPremium && <FiStar className="text-yellow-400 w-6 h-6" />}
         </h2>
 
+        {/* Location */}
+        {user?.location && (
+          <p className="flex items-center justify-center gap-2 mt-1 text-lg text-gray-300">
+            <FaMapMarkerAlt className="text-yellow-400" /> {user.location}
+          </p>
+        )}
+
+        {/* Email */}
         <p className="text-gray-300 flex items-center justify-center gap-2 mt-1 text-lg">
           <FiMail /> {user?.email || "user@example.com"}
         </p>
 
+        {/* Other Details */}
         <div className="mt-4 space-y-3 text-gray-300 text-lg">
           <p>
             🎂 Age: <span className="font-semibold">{user?.age || "N/A"}</span>
+          </p>
+
+          {/* Description Section */}
+          <p>
+            📝 About Me:{" "}
+            <span className="font-semibold">
+              {user?.description || "No description available"}
+            </span>
           </p>
 
           {/* Skills Section */}
