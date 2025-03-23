@@ -53,9 +53,10 @@ const Profile = () => {
             initial={{ scale: 0.8 }}
             animate={{ scale: 1 }}
             transition={{ duration: 0.3 }}
-            className="absolute top-4 right-4 bg-yellow-400 text-black px-4 py-1 text-xs font-bold rounded-full shadow-md flex items-center gap-1 uppercase"
+            className="absolute top-4 right-2 sm:right-4 bg-yellow-400 text-black px-3 py-1 text-xs sm:text-sm font-bold rounded-full shadow-md flex items-center gap-1 uppercase"
           >
-            <FiStar className="text-black" /> {user?.membershipType} Member
+            <FiStar className="text-black w-4 h-4 sm:w-5 sm:h-5" />
+            <span className="truncate">{user?.membershipType} Member</span>
           </motion.span>
         )}
 

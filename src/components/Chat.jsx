@@ -95,7 +95,10 @@ const Chat = () => {
     });
 
     socket.on("messageReceived", ({ name, text, time, date, senderId }) => {
-      setMessages((messages) => [...messages, { name, text, time, date, senderId }]);
+      setMessages((messages) => [
+        ...messages,
+        { name, text, time, date, senderId },
+      ]);
     });
 
     return () => {
@@ -135,8 +138,11 @@ const Chat = () => {
 
   return (
     <div className="flex flex-col h-screen bg-gray-900 text-white overflow-hidden">
-      <header className="bg-gray-800 p-4 flex items-center gap-3 shadow-lg">
-        <button onClick={() => navigate("/connections")} className="p-2 rounded-full hover:bg-gray-700">
+      <header className="bg-gray-800 p-4 flex items-center gap-3 shadow-lg sticky top-0 z-10">
+        <button
+          onClick={() => navigate("/connections")}
+          className="p-2 rounded-full hover:bg-gray-700"
+        >
           <ArrowLeft size={24} color="white" />
         </button>
         <h2 className="font-semibold text-lg flex-1 text-center">
@@ -151,13 +157,26 @@ const Chat = () => {
 
       <main className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((msg, index) => (
-          <div key={index} className={`flex ${msg.senderId === userId ? "justify-end" : "justify-start"}`}>
+          <div
+            key={index}
+            className={`flex ${
+              msg.senderId === userId ? "justify-end" : "justify-start"
+            }`}
+          >
             <div
-              className={`max-w-xs sm:max-w-md p-3 rounded-lg ${msg.senderId === userId ? "bg-blue-500 text-black rounded-br-none" : "bg-gray-700 text-white rounded-bl-none"}`}
+              className={`max-w-xs sm:max-w-md p-3 rounded-lg ${
+                msg.senderId === userId
+                  ? "bg-blue-500 text-black rounded-br-none"
+                  : "bg-gray-700 text-white rounded-bl-none"
+              }`}
             >
-              <div className="text-xs opacity-50 mb-1">{msg.senderId === userId ? "You" : msg.name}</div>
+              <div className="text-xs opacity-50 mb-1">
+                {msg.senderId === userId ? "You" : msg.name}
+              </div>
               <div>{msg.text}</div>
-              <div className="text-xs opacity-50 mt-1 text-right">{msg.time} | {msg.date}</div>
+              <div className="text-xs opacity-50 mt-1 text-right">
+                {msg.time} | {msg.date}
+              </div>
             </div>
           </div>
         ))}
@@ -175,7 +194,10 @@ const Chat = () => {
           className="flex-1 p-2 border rounded-lg focus:outline-none bg-gray-700 text-white"
           placeholder="Type a message..."
         />
-        <button onClick={sendMessage} className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700">
+        <button
+          onClick={sendMessage}
+          className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700"
+        >
           <Send size={24} color="white" />
         </button>
       </footer>
