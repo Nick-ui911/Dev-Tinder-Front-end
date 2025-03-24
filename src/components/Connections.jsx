@@ -13,6 +13,12 @@ const Connections = () => {
   const connections = useSelector((state) => state.connection.connections);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [searchQuery, setSearchQuery] = useState(""); // 🔍 Search state
+
+  // Filter feeds based on search query
+  const filteredConnections = connections.filter((connection) =>
+    connection?.name?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const fetchConnections = async () => {
     try {
@@ -51,17 +57,27 @@ const Connections = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 px-4 py-12 text-white w-full overflow-hidden my-10">
+      {/* 🔍 Search Input */}
+      <div className="mb-6 flex justify-center">
+        <input
+          type="text"
+          placeholder="Search by skills..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full max-w-md px-4 py-2 text-white border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
       <h2 className="text-3xl font-bold text-center mb-8">My Connections</h2>
 
       {loading ? (
         <Loader />
       ) : error ? (
         <p className="text-center text-red-500">{error}</p>
-      ) : connections.length === 0 ? (
+      ) : filteredConnections.length === 0 ? (
         <p className="text-center text-gray-400">No connections found.</p>
       ) : (
         <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-6 w-full max-w-6xl mx-auto">
-          {connections
+          {filteredConnections
             .filter((user) => user && user._id)
             .map((user, index) => (
               <div
