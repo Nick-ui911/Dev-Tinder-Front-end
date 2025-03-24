@@ -5,11 +5,13 @@ import { addUser } from "../utils/UserSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Loader from "./Loader";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
   const [loading, setLoading] = useState(false);
@@ -71,7 +73,12 @@ const Register = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <input type="text" name="name" placeholder="Full Name" className="w-full p-3 rounded-lg bg-white/30 text-black placeholder-black focus:outline-none" onChange={(e) => setName(e.target.value)} required />
           <input type="email" name="email" placeholder="Email" className="w-full p-3 rounded-lg bg-white/30 text-black placeholder-black focus:outline-none" onChange={(e) => setEmail(e.target.value)} required />
-          <input type="password" name="password" placeholder="Password" className="w-full p-3 rounded-lg bg-white/30 text-black placeholder-black focus:outline-none" onChange={(e) => setPassword(e.target.value)} required />
+          <div className="relative">
+            <input type={showPassword ? "text" : "password"} name="password" placeholder="Password" className="w-full p-3 rounded-lg bg-white/30 text-black placeholder-black focus:outline-none" onChange={(e) => setPassword(e.target.value)} required />
+            <span className="absolute right-3 top-3 cursor-pointer text-black" onClick={() => setShowPassword(!showPassword)}>
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </span>
+          </div>
           <input type="number" name="age" placeholder="Age" className="w-full p-3 rounded-lg bg-white/30 text-black placeholder-black focus:outline-none" onChange={(e) => setAge(e.target.value)} required />
           <select name="gender" className="w-full p-3 rounded-lg bg-white/30 text-black focus:outline-none" onChange={(e) => setGender(e.target.value)} required>
             <option value="">Select Gender</option>
