@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { removeUser } from "../utils/UserSlice";
@@ -13,13 +13,17 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
-    if (dropdownOpen) {
-      const timer = setTimeout(() => setDropdownOpen(false), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [dropdownOpen]);
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -32,17 +36,17 @@ const Navbar = () => {
   };
 
   return (
-    <div className="fixed top-0 w-full h-16 flex items-center justify-between px-6 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shadow-lg z-10">
+    <div className="fixed top-0 w-full h-16 flex items-center justify-between px-4 md:px-6 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shadow-lg z-10">
       {/* Logo */}
       <Link
         to="/"
-        className="text-white text-3xl font-extrabold tracking-wide hover:scale-105 transition"
+        className="text-white text-2xl md:text-3xl font-extrabold tracking-wide hover:scale-105 transition"
       >
         DevWorld
       </Link>
 
       {/* Navigation Icons */}
-      <div className="hidden md:flex items-center gap-6 text-white text-2xl">
+      <div className="hidden md:flex items-center gap-6 text-white text-xl md:text-2xl">
         <Link
           to={location.pathname === "/feeddata" ? "/" : "/feeddata"}
           className="hover:text-gray-200 transition"
@@ -60,70 +64,75 @@ const Navbar = () => {
       </div>
 
       {/* User Profile & Dropdown */}
-      <div className="flex items-center">
+      <div className="relative" ref={dropdownRef}>
         {user ? (
-          <div className="relative">
-            <button onClick={() => setDropdownOpen(!dropdownOpen)}>
-              <img
-                alt="User Avatar"
-                className="w-10 h-10 rounded-full border border-white"
-                src={user?.PhotoUrl || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"}
-              />
-            </button>
-
-            {dropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg">
-                <ul className="py-2 text-gray-700">
-                  <li>
-                    <Link
-                      to={location.pathname === "/feeddata" ? "/" : "/feeddata"}
-                      className="flex items-center gap-2 px-4 py-2 hover:bg-gray-200"
-                    >
-                      {location.pathname === "/feeddata" ? <FiHome /> : <FiDatabase />} 
-                      {location.pathname === "/feeddata" ? "Home" : "Feed"}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/profile" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-200">
-                      <FiUser /> Profile
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/connections" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-200">
-                      <IoMdContacts /> Connections
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/premium" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-200">
-                      ⭐ Get Premium
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/request" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-200">
-                      📩 Requests
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="/ForgotPasswordPage" className="flex items-center gap-2 px-4 py-2 hover:bg-gray-200">
-                      🔑 Update Password
-                    </Link>
-                  </li>
-                  <li>
-                    <button
-                      onClick={handleLogout}
-                      className="flex items-center w-full px-4 py-2 text-red-600 hover:bg-gray-200"
-                    >
-                      <FiLogOut className="mr-2" /> Logout
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            )}
-          </div>
+          <button onClick={() => setDropdownOpen(!dropdownOpen)} className="focus:outline-none">
+            <img
+              alt="User Avatar"
+              className="w-8 h-8 md:w-10 md:h-10 rounded-full border border-white"
+              src={
+                user?.PhotoUrl ||
+                "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+              }
+            />
+          </button>
         ) : (
-          <Link to="/login" className="bg-white text-indigo-500 px-4 py-2 rounded-full shadow-md hover:bg-indigo-100 transition">
+          <Link to="/login" className="bg-white text-indigo-500 px-3 py-1 md:px-4 md:py-2 rounded-full shadow-md hover:bg-indigo-100 transition">
             Login
           </Link>
+        )}
+
+        {dropdownOpen && (
+          <div className="absolute right-0 mt-2 w-40 md:w-48 bg-white rounded-lg shadow-lg text-sm md:text-base">
+            <ul className="py-2 text-gray-700">
+              <li>
+                <Link
+                  to={location.pathname === "/feeddata" ? "/" : "/feeddata"}
+                  className="flex items-center gap-2 px-3 md:px-4 py-2 hover:bg-gray-200"
+                  onClick={() => setDropdownOpen(false)}
+                >
+                  {location.pathname === "/feeddata" ? <FiHome /> : <FiDatabase />} 
+                  {location.pathname === "/feeddata" ? "Home" : "Feed"}
+                </Link>
+              </li>
+              <li>
+                <Link to="/profile" className="flex items-center gap-2 px-3 md:px-4 py-2 hover:bg-gray-200" onClick={() => setDropdownOpen(false)}>
+                  <FiUser /> Profile
+                </Link>
+              </li>
+              <li>
+                <Link to="/connections" className="flex items-center gap-2 px-3 md:px-4 py-2 hover:bg-gray-200" onClick={() => setDropdownOpen(false)}>
+                  <IoMdContacts /> Connections
+                </Link>
+              </li>
+              <li>
+                <Link to="/premium" className="flex items-center gap-2 px-3 md:px-4 py-2 hover:bg-gray-200" onClick={() => setDropdownOpen(false)}>
+                  ⭐ Get Premium
+                </Link>
+              </li>
+              <li>
+                <Link to="/request" className="flex items-center gap-2 px-3 md:px-4 py-2 hover:bg-gray-200" onClick={() => setDropdownOpen(false)}>
+                  📩 Requests
+                </Link>
+              </li>
+              <li>
+                <Link to="/ForgotPasswordPage" className="flex items-center gap-2 px-3 md:px-4 py-2 hover:bg-gray-200" onClick={() => setDropdownOpen(false)}>
+                  🔑 Update Password
+                </Link>
+              </li>
+              <li>
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setDropdownOpen(false);
+                  }}
+                  className="flex items-center w-full px-3 md:px-4 py-2 text-red-600 hover:bg-gray-200"
+                >
+                  <FiLogOut className="mr-2" /> Logout
+                </button>
+              </li>
+            </ul>
+          </div>
         )}
       </div>
     </div>

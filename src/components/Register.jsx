@@ -4,6 +4,7 @@ import { BASE_URL } from "../utils/constants";
 import { addUser } from "../utils/UserSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import Loader from "./Loader";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -11,145 +12,78 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
-  const [errorMessage, setErrorMessage] = useState(""); // State for error messages
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Email validation function
-  const isValidEmail = (email) => {
+  const validateEmail = (email) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  // Strong password validation function
-  const isValidPassword = (password) => {
-    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password);
-  };
-
-  // Age validation (must be a number and at least 18)
-  const isValidAge = (age) => {
-    return age >= 18;
+  const validatePassword = (password) => {
+    return /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage(""); // Reset error message
+    setErrorMessage("");
+    setLoading(true);
 
-    // Frontend validation
     if (!name || !email || !password || !age || !gender) {
       setErrorMessage("All fields are required.");
+      setLoading(false);
       return;
     }
 
-    if (!isValidEmail(email)) {
-      setErrorMessage("Invalid email format.");
+    if (!validateEmail(email)) {
+      setErrorMessage("Please enter a valid email address.");
+      setLoading(false);
       return;
     }
 
-    if (!isValidPassword(password)) {
-      setErrorMessage(
-        "Password must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character."
-      );
-      return;
-    }
-
-    if (!isValidAge(age)) {
-      setErrorMessage("You must be at least 18 years old.");
+    if (!validatePassword(password)) {
+      setErrorMessage("Password must be at least 8 characters long, include one uppercase letter, one number, and one special character.");
+      setLoading(false);
       return;
     }
 
     try {
-      const response = await axios.post(
-        BASE_URL + "/signup",
-        { name, email, password, age, gender },
-        { withCredentials: true }
-      );
-
+      const response = await axios.post(BASE_URL + "/signup", { name, email, password, age, gender }, { withCredentials: true });
       dispatch(addUser(response.data.data));
       navigate("/profile");
     } catch (error) {
       setErrorMessage("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-16 p-6 bg-gray-700 rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-4 text-white">Register</h2>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-gray-800 via-gray-700 to-gray-900 animate-fade-in">
+         {loading && <Loader />} 
+      <div className="bg-gray-400 bg-opacity-20 backdrop-blur-lg p-8 rounded-xl shadow-lg w-96 animate-slide-in">
+        <h2 className="text-2xl font-bold text-black text-center mb-6">Create an Account</h2>
 
-      {errorMessage && ( // Show error message if exists
-        <p className="text-red-500 text-sm mb-4">{errorMessage}</p>
-      )}
+        {errorMessage && <p className="text-red-500 text-sm text-center animate-pulse">{errorMessage}</p>}
 
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label className="block font-semibold text-white">Name</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full p-2 border rounded"
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block font-semibold text-white">Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 border rounded"
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block font-semibold text-white">Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 border rounded"
-            required
-          />
-          <small className="text-gray-300">
-            Must be at least 8 characters, include uppercase, lowercase, number & special character.
-          </small>
-        </div>
-
-        <div className="mb-4">
-          <label className="block font-semibold text-white">Age</label>
-          <input
-            type="number"
-            value={age}
-            onChange={(e) => setAge(e.target.value)}
-            className="w-full p-2 border rounded"
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block font-semibold text-white">Gender</label>
-          <select
-            value={gender}
-            onChange={(e) => setGender(e.target.value)}
-            className="w-full bg-gray-600 p-2 border rounded"
-            required
-          >
-            <option value="">Select</option>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input type="text" name="name" placeholder="Full Name" className="w-full p-3 rounded-lg bg-white/30 text-black placeholder-black focus:outline-none" onChange={(e) => setName(e.target.value)} required />
+          <input type="email" name="email" placeholder="Email" className="w-full p-3 rounded-lg bg-white/30 text-black placeholder-black focus:outline-none" onChange={(e) => setEmail(e.target.value)} required />
+          <input type="password" name="password" placeholder="Password" className="w-full p-3 rounded-lg bg-white/30 text-black placeholder-black focus:outline-none" onChange={(e) => setPassword(e.target.value)} required />
+          <input type="number" name="age" placeholder="Age" className="w-full p-3 rounded-lg bg-white/30 text-black placeholder-black focus:outline-none" onChange={(e) => setAge(e.target.value)} required />
+          <select name="gender" className="w-full p-3 rounded-lg bg-white/30 text-black focus:outline-none" onChange={(e) => setGender(e.target.value)} required>
+            <option value="">Select Gender</option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
             <option value="Other">Other</option>
           </select>
-        </div>
-
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded"
-        >
-          Register
-        </button>
-      </form>
+          <button type="submit" className="w-full p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition flex justify-center items-center">
+            {loading ? <span className="animate-spin border-4 border-white border-t-transparent rounded-full h-6 w-6"></span> : "Register"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
