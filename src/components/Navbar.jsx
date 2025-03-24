@@ -16,7 +16,7 @@ const Navbar = () => {
 
   useEffect(() => {
     if (dropdownOpen) {
-      const timer = setTimeout(() => setDropdownOpen(false), 4000);
+      const timer = setTimeout(() => setDropdownOpen(false), 3000);
       return () => clearTimeout(timer);
     }
   }, [dropdownOpen]);

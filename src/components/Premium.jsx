@@ -94,6 +94,9 @@ const Premium = () => {
             </li>
             <li className="flex items-center gap-2">✅ Get a Blue Tick</li>
             <li className="flex items-center gap-2">✅ Monthly updates</li>
+            <li className="flex items-center gap-2">
+              ✅ Unlimited Chat With Connection
+            </li>
           </ul>
           <button
             onClick={() => handleClick("silver")}
@@ -114,6 +117,9 @@ const Premium = () => {
             </li>
             <li className="flex items-center gap-2">
               ✅ Unlimited Chat With Connection
+            </li>
+            <li className="flex items-center gap-2">
+              ✅ Unlimited Call With Connection
             </li>
             <li className="flex items-center gap-2">
               ✅ Early access to new features

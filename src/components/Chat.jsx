@@ -7,6 +7,7 @@ import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { Send, ArrowLeft } from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
+import NotPremium from "./NotPremium";
 
 let socket;
 
@@ -16,6 +17,7 @@ const Chat = () => {
   const [connectionUser, setConnectionUser] = useState(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [isPremium, setIsPremium] = useState(null); // New state to track premium status
 
   const { connectionUserId } = useParams();
   const navigate = useNavigate();
@@ -26,6 +28,29 @@ const Chat = () => {
 
   const userId = user?._id;
   const messagesEndRef = useRef(null);
+
+
+  // To check MemberShip Type
+  const fetchProfile = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/profile/view`, {
+        withCredentials: true,
+      });
+
+      dispatch(addUser(res.data));
+      setIsPremium(res.data.isPremium); // Store isPremium status
+    } catch (error) {
+      if (error.response?.status === 401) {
+        navigate("/login");
+      } else {
+        console.error("Error fetching profile", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
 
   useEffect(() => {
     const foundConnection = connections.find(
@@ -136,6 +161,10 @@ const Chat = () => {
     setNewMessage((prevMessage) => prevMessage + emoji.emoji);
   };
 
+  // ❌ Show animated message if user is NOT premium or still loading
+  if (isPremium === null || isPremium === false){
+    return <NotPremium/>
+  }
   return (
     <div className="flex flex-col h-screen bg-gray-900 text-white overflow-hidden">
       <header className="bg-gray-800 p-4 flex items-center gap-3 shadow-lg sticky top-0 z-10">

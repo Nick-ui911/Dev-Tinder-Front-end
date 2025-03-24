@@ -1,88 +1,182 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { BASE_URL } from "../utils/constants";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // Import Toastify CSS
 
 const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: "",
-  });
+  const user = useSelector((store) => store.user);
+  const [name, setName] = useState(user?.name || "");
+  const [email, setEmail] = useState(user?.email || "");
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const fetchProfile = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/profile/view`, {
+        withCredentials: true,
+      });
+      dispatch(addUser(res.data));
+    } catch (error) {
+      if (error.response?.status === 401) {
+        navigate("/login");
+      } else {
+        console.error("Error fetching profile", error);
+      }
+    }
   };
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (location.pathname === "/contact") {
+      fetchProfile();
+    }
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (user) {
+      setName(user.name || "");
+      setEmail(user.email || "");
+    }
+  }, [user]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("Message Sent! We will get back to you soon.");
-    setFormData({ name: "", email: "", message: "" });
+    setLoading(true);
+
+    try {
+      const response = await axios.post(BASE_URL + "/send-email", {
+        name,
+        email,
+        message,
+      });
+
+      if (response.data.success) {
+        toast.success("✅ Message Sent Successfully!", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+        });
+        setName("");
+        setEmail("");
+        setMessage("");
+      } else {
+        toast.error("❌ Failed to send message. Please try again.", {
+          position: "top-center",
+          autoClose: 3000,
+          hideProgressBar: true,
+        });
+      }
+    } catch (error) {
+      console.error("Error sending email:", error);
+      toast.error("⚠️ An error occurred. Please try again later.", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: true,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-6">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="min-h-screen bg-gradient-to-br from-blue-100 to-purple-200 flex flex-col items-center justify-center p-6"
+    >
+      {/* Toast Notifications */}
+      <ToastContainer />
+
       {/* Contact Header */}
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold text-gray-900">Contact Us</h1>
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="text-center mb-8"
+      >
+        <h1 className="text-5xl font-bold text-gray-900">Contact Us</h1>
         <p className="text-lg text-gray-600 mt-2">
           Got a question? We'd love to hear from you!
         </p>
-      </div>
+      </motion.div>
 
       {/* Contact Form Section */}
-      <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-lg">
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="bg-white shadow-xl rounded-lg p-8 w-full max-w-lg"
+      >
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
+          <motion.div
+            whileFocus={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 300 }}
+            className="mb-4"
+          >
             <label className="block text-gray-700 font-semibold mb-2">Name</label>
             <input
               type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 text-gray-900 focus:ring-blue-500"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 transition-all"
               required
             />
-          </div>
+          </motion.div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700 font-semibold mb-2">Email</label>
+          <motion.div
+            whileFocus={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 300 }}
+            className="mb-4"
+          >
+            <label className="block text-gray-700 font-semibold mb-2">Your Email</label>
             <input
               type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 text-gray-900 focus:ring-blue-500"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 transition-all"
               required
             />
-          </div>
+          </motion.div>
 
-          <div className="mb-4">
+          <motion.div
+            whileFocus={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 300 }}
+            className="mb-4"
+          >
             <label className="block text-gray-700 font-semibold mb-2">Message</label>
             <textarea
-              name="message"
-              value={formData.message}
-              onChange={handleChange}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
               rows="4"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 text-gray-900 focus:ring-blue-500"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 transition-all"
               required
             ></textarea>
-          </div>
+          </motion.div>
 
-          <button
+          <motion.button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 300 }}
+            className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 rounded-lg shadow-lg hover:shadow-2xl transition flex justify-center items-center"
+            disabled={loading}
           >
-            Send Message
-          </button>
+            {loading ? (
+              <span className="animate-spin border-2 border-white border-t-transparent rounded-full w-5 h-5 mr-2"></span>
+            ) : (
+              "Send Message"
+            )}
+          </motion.button>
         </form>
-      </div>
-
-      {/* Contact Info Section */}
-      <div className="mt-12 text-center">
-        <h2 className="text-2xl font-semibold mb-4">Our Contact Details</h2>
-        <p className="text-gray-700">📍 Satna, India</p>
-        <p className="text-gray-700">📧 nbaghel392@gmail.com</p>
-        <p className="text-gray-700">📞 +91 6232716505</p>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 
