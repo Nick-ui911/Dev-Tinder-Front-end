@@ -8,6 +8,7 @@ import { BASE_URL } from "../utils/constants";
 import { Send, ArrowLeft } from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
 import NotPremium from "./NotPremium";
+import { addUser } from "../utils/UserSlice";
 
 let socket;
 
@@ -36,6 +37,7 @@ const Chat = () => {
       const res = await axios.get(`${BASE_URL}/profile/view`, {
         withCredentials: true,
       });
+      console.log(res.data.isPremium)
 
       dispatch(addUser(res.data));
       setIsPremium(res.data.isPremium); // Store isPremium status
