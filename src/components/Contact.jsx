@@ -6,6 +6,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import Toastify CSS
+import { addUser } from "../utils/UserSlice";
 
 const Contact = () => {
   const user = useSelector((store) => store.user);
@@ -156,7 +157,7 @@ const Contact = () => {
               onChange={(e) => setMessage(e.target.value)}
               rows="4"
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 transition-all"
-              required
+              // required
             ></textarea>
           </motion.div>
 

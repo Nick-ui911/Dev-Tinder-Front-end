@@ -37,7 +37,7 @@ const Chat = () => {
       const res = await axios.get(`${BASE_URL}/profile/view`, {
         withCredentials: true,
       });
-      console.log(res.data.isPremium)
+      // console.log(res.data.isPremium)
 
       dispatch(addUser(res.data));
       setIsPremium(res.data.isPremium); // Store isPremium status

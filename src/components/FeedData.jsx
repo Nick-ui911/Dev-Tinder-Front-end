@@ -21,7 +21,7 @@ function FeedData() {
           withCredentials: true,
         });
         dispatch(addFeed(response.data.data));
-        console.log(response)
+        // console.log(response)
       } catch (error) {
         console.error("Error fetching feeds:", error);
       } finally {
@@ -32,13 +32,19 @@ function FeedData() {
     fetchFeedData();
   }, [dispatch]);
 
+  const handleRemoveFeed = (feedId) => {
+    dispatch(addFeed(feeds.filter(feed => feed._id !== feedId))); // 🔥 Updates Redux instantly
+  };
+  
+
   // Filter feeds based on search query
   const filteredFeeds = feeds.filter((feed) =>
-    feed.skills?.some((skill) =>
-      skill.toLowerCase().includes(searchQuery.toLowerCase())
-    )
+    !searchQuery || (Array.isArray(feed.skills) &&
+      feed.skills.some((skill) =>
+        skill.toLowerCase().includes(searchQuery.toLowerCase())
+      ))
   );
-
+  
   return (
     <div className="min-h-screen my-20 p-8 bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#334155] text-white">
       {!user ? (
@@ -63,7 +69,7 @@ function FeedData() {
           ) : filteredFeeds.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {filteredFeeds.map((feed) => (
-                <FeedCard key={feed._id} {...feed} />
+              <FeedCard key={feed._id} {...feed} handleRemoveFeed={handleRemoveFeed} />
               ))}
             </div>
           ) : (
