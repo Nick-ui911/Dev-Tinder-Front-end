@@ -4,7 +4,6 @@ import { useDispatch } from "react-redux";
 import { addUser } from "../utils/UserSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
-import Loader from "./Loader"; // Import the Loader component
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
 
 const Login = () => {
@@ -37,43 +36,44 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 to-purple-800">
-      {loading && <Loader />} {/* Show loader when login is in progress */}
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
+     
 
       {!loading && (
-        <div className="bg-white p-8 rounded-xl shadow-2xl w-full sm:w-96">
-          <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-6">
+        <div className="bg-gradient-to-br from-gray-800/60 to-gray-900/60 
+                         backdrop-blur-lg  p-8 rounded-xl shadow-2xl w-full sm:w-96">
+          <h2 className="text-3xl font-extrabold text-center text-white mb-6">
             Login
           </h2>
           {error && <span className="text-red-500 text-sm">{error}</span>}
 
           <form onSubmit={handleSubmit}>
             <div className="mb-6">
-              <label className="block text-gray-700 text-sm font-medium">
+              <label className="block text-white text-sm font-medium">
                 Email
               </label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                className="w-full px-4 py-3 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
                 required
               />
             </div>
 
             <div className="mb-6 relative">
-              <label className="block text-gray-700 text-sm font-medium">
+              <label className="block text-white text-sm font-medium">
                 Password
               </label>
               <input
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black pr-12"
+                className="w-full px-4 py-3 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white pr-12"
                 required
               />
               <span
-                className="absolute top-10 right-4 text-gray-500 cursor-pointer"
+                className="absolute top-10 right-4 text-white cursor-pointer"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
@@ -81,15 +81,19 @@ const Login = () => {
             </div>
 
             <button
-              type="submit"
-              className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-            >
-              Login
-            </button>
+            type="submit"
+            className="w-full p-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:bg-blue-600 transition flex justify-center items-center"
+          >
+            {loading ? (
+              <span className="animate-spin border-4 border-white border-t-transparent rounded-full h-6 w-6"></span>
+            ) : (
+              "Login"
+            )}
+          </button>
           </form>
 
           <div className="text-center mt-4">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-white">
               Don't have an account?{" "}
               <Link to="/register" className="text-blue-600 hover:underline">
                 Sign up

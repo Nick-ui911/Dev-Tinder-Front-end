@@ -17,8 +17,6 @@ const Footer = () => {
             <Link to="/register" className="hover:text-blue-400 transition-colors">Register</Link>
             <Link to="/privacy" className="hover:text-blue-400 transition-colors">Privacy Policy</Link>
             <Link to="/termandconditions" className="hover:text-blue-400 transition-colors">Terms & Conditions</Link>
-            <Link to="/cancellationrefund" className="hover:text-blue-400 transition-colors">Cancellation & Refund</Link>
-            <Link to="/shipping" className="hover:text-blue-400 transition-colors">Shipping Policy</Link>
           </nav>
 
           {/* Social Media Icons */}

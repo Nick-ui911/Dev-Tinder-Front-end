@@ -40,12 +40,12 @@ const Profile = () => {
     : ["Not specified"];
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 px-6 text-white">
+    <div className="flex justify-center mt-16 items-center min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 px-6 text-white">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="relative w-full max-w-md p-8 shadow-2xl rounded-3xl bg-gray-850 border border-gray-700 text-center hover:scale-105 transition-all"
+        className="relative w-full max-w-md p-8 shadow-2xl rounded-3xl bg-gray-850 border border-gray-500 text-center hover:scale-105 transition-all"
       >
         {/* Premium Badge */}
         {user?.isPremium && (

@@ -56,15 +56,15 @@ const Connections = () => {
   }, [dispatch, connections]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 px-4 py-12 text-white w-full overflow-hidden my-10">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 px-4 py-12 text-white w-full overflow-hidden mt-16">
       {/* 🔍 Search Input */}
       <div className="mb-6 flex justify-center">
         <input
           type="text"
-          placeholder="Search by skills..."
+          placeholder="Search by name..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full max-w-md px-4 py-2 text-white border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full max-w-lg px-5 py-3 text-white bg-gray-800 border border-gray-600 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
         />
       </div>
       <h2 className="text-3xl font-bold text-center mb-8">My Connections</h2>
@@ -77,49 +77,59 @@ const Connections = () => {
         <p className="text-center text-gray-400">No connections found.</p>
       ) : (
         <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-6 w-full max-w-6xl mx-auto">
-          {filteredConnections
-            .filter((user) => user && user._id)
-            .map((user, index) => (
-              <div
-                key={user?._id || index}
-                className="bg-gray-800 shadow-lg rounded-xl p-6 flex flex-col items-center transition transform hover:scale-105 w-full"
-              >
-                {/* Profile Picture */}
-                <img
-                  src={
-                    user?.PhotoUrl ||
-                    "https://www.shutterstock.com/image-vector/user-profile-icon-vector-avatar-600nw-2220431045.jpg"
-                  }
-                  alt={user?.name || "User"}
-                  className="w-20 h-20 rounded-full border-4 border-blue-500 shadow-md"
-                />
-
-                {/* User Info */}
-                <h3 className="text-xl font-semibold mt-3">
-                  {user?.name || "Unknown User"}
-                </h3>
-                <p className="text-gray-400 text-sm">{user?.gender || "N/A"}</p>
-                <p className="text-gray-300 text-sm">
-                  Skill: {user?.skill || "N/A"}
-                </p>
-
-                {/* Buttons */}
-                <div className="flex gap-4 mt-4">
-                  <button
-                    onClick={() => handleUnfollow(user?._id)}
-                    className="flex items-center bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition duration-200"
+        {filteredConnections
+          .filter((user) => user && user._id)
+          .map((user, index) => (
+            <div
+              key={user?._id || index}
+              className="relative bg-gradient-to-br from-gray-800/60 to-gray-900/60 
+                         backdrop-blur-lg shadow-xl rounded-xl p-6 flex flex-col items-center 
+                         "
+            >
+              {/* Background Glow Effect */}
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-indigo-500/20 
+                              opacity-50 blur-2xl rounded-xl pointer-events-none"></div>
+      
+              {/* Profile Picture */}
+              <img
+                src={
+                  user?.PhotoUrl ||
+                  "https://www.shutterstock.com/image-vector/user-profile-icon-vector-avatar-600nw-2220431045.jpg"
+                }
+                alt={user?.name || "User"}
+                className="w-24 h-24 rounded-full border-4 border-blue-500 shadow-lg hover:shadow-xl transition"
+              />
+      
+              {/* User Info */}
+              <h3 className="text-xl font-semibold mt-3 text-white">
+                {user?.name || "Unknown User"}
+              </h3>
+              <p className="text-gray-300 text-sm">{user?.gender || "N/A"}</p>
+              <p className="text-gray-400 text-sm">
+                Skill: {user?.skill || "N/A"}
+              </p>
+      
+              {/* Buttons */}
+              <div className="flex gap-4 mt-4">
+                <button
+                  onClick={() => handleUnfollow(user?._id)}
+                  className="flex items-center bg-red-600 hover:bg-red-700 text-white px-4 py-2 
+                             rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md"
+                >
+                  <AiOutlineUserDelete className="mr-2" /> Unfollow
+                </button>
+                <Link to={`/chat/${user?._id}`}>
+                  <button className="flex items-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 
+                                     rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md"
                   >
-                    <AiOutlineUserDelete className="mr-2" /> Unfollow
+                    <FiMessageSquare className="mr-2" /> Chat
                   </button>
-                  <Link to={`/chat/${user?._id}`}>
-                    <button className="flex items-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition duration-200">
-                      <FiMessageSquare className="mr-2" /> Chat
-                    </button>
-                  </Link>
-                </div>
+                </Link>
               </div>
-            ))}
-        </div>
+            </div>
+          ))}
+      </div>
+      
       )}
     </div>
   );

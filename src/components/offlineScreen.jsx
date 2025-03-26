@@ -9,7 +9,7 @@ const OfflineScreen = () => {
   if (isOnline) return null; // Hide component if online
 
   return (
-    <div className="fixed inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800 text-white z-50 text-center p-6 animate-fadeIn">
+    <div className="fixed inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white z-50 text-center p-6 animate-fadeIn">
       {/* WiFi Off Icon */}
       <MdWifiOff className="text-red-500 text-9xl mb-4 animate-pulse" />
 

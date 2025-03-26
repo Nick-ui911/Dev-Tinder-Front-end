@@ -90,7 +90,7 @@ const Contact = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="min-h-screen bg-gradient-to-br from-blue-100 to-purple-200 flex flex-col items-center justify-center p-6"
+      className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900  flex flex-col items-center justify-center p-6"
     >
       {/* Toast Notifications */}
       <ToastContainer />
@@ -100,10 +100,10 @@ const Contact = () => {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="text-center mb-8"
+        className="text-center mt-16 mb-8"
       >
-        <h1 className="text-5xl font-bold text-gray-900">Contact Us</h1>
-        <p className="text-lg text-gray-600 mt-2">
+        <h1 className="text-5xl font-bold text-white">Contact Us</h1>
+        <p className="text-lg text-white mt-2">
           Got a question? We'd love to hear from you!
         </p>
       </motion.div>
@@ -113,7 +113,7 @@ const Contact = () => {
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="bg-white shadow-xl rounded-lg p-8 w-full max-w-lg"
+        className=" bg-gradient-to-br from-gray-800 via-gray-900 to-gray-950 shadow-xl rounded-lg p-8 w-full max-w-lg"
       >
         <form onSubmit={handleSubmit}>
           <motion.div
@@ -121,12 +121,12 @@ const Contact = () => {
             transition={{ type: "spring", stiffness: 300 }}
             className="mb-4"
           >
-            <label className="block text-gray-700 font-semibold mb-2">Name</label>
+            <label className="block text-white font-semibold mb-2">Name</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 transition-all"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white transition-all"
               required
             />
           </motion.div>
@@ -136,12 +136,12 @@ const Contact = () => {
             transition={{ type: "spring", stiffness: 300 }}
             className="mb-4"
           >
-            <label className="block text-gray-700 font-semibold mb-2">Your Email</label>
+            <label className="block text-white-700 font-semibold mb-2">Your Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 transition-all"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white transition-all"
               required
             />
           </motion.div>
@@ -151,12 +151,12 @@ const Contact = () => {
             transition={{ type: "spring", stiffness: 300 }}
             className="mb-4"
           >
-            <label className="block text-gray-700 font-semibold mb-2">Message</label>
+            <label className="block text-white font-semibold mb-2">Message</label>
             <textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows="4"
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 transition-all"
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white transition-all"
               // required
             ></textarea>
           </motion.div>

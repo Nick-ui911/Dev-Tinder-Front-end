@@ -10,7 +10,7 @@ const NotPremium = () => {
       initial={{ opacity: 0, y: -50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className="flex flex-col items-center justify-center h-screen bg-gradient-to-br from-purple-500 to-blue-600 text-white text-center p-6"
+      className="flex flex-col items-center justify-center h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white text-center p-6"
     >
       <motion.h1
         initial={{ scale: 0.8 }}

@@ -3,8 +3,9 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BASE_URL } from "../utils/constants";
 import { addRequest, removeRequest } from "../utils/RequestSlice";
-import { addConnections } from "../utils/ConnectionSlice"; 
+import { addConnections } from "../utils/ConnectionSlice";
 import Loader from "./Loader";
+import { Loader2 } from "lucide-react";
 
 const Request = () => {
   const dispatch = useDispatch();
@@ -12,6 +13,7 @@ const Request = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [processing, setProcessing] = useState({});
 
   const fetchRequest = async () => {
     try {
@@ -29,6 +31,7 @@ const Request = () => {
   };
 
   const reviewRequest = async (status, _id) => {
+    setProcessing((prev) => ({ ...prev, [_id]: true }));
     try {
       await axios.post(
         `${BASE_URL}/request/review/${status}/${_id}`,
@@ -45,39 +48,45 @@ const Request = () => {
         dispatch(addConnections(response.data.data));
       }
 
-      setSuccessMessage(`Request ${status === "accepted" ? "accepted" : "rejected"} successfully`);
+      setSuccessMessage(
+        `Request ${
+          status === "accepted" ? "accepted" : "rejected"
+        } successfully`
+      );
       setError("");
     } catch (error) {
       setError("Failed to review request");
+    } finally {
+      setProcessing((prev) => ({ ...prev, [_id]: false }));
     }
   };
 
   useEffect(() => {
-    if (requests.length === 0) {
-      fetchRequest();
-    }
+    fetchRequest();
   }, []);
 
   useEffect(() => {
     if (successMessage) {
       const timer = setTimeout(() => {
-        setSuccessMessage(""); 
+        setSuccessMessage("");
       }, 2000);
-  
+
       return () => clearTimeout(timer);
     }
   }, [successMessage]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-900 to-gray-800 text-white my-10">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white mt-16">
       {/* Content Wrapper */}
       <div className="flex-grow container mx-auto px-6 py-12">
-        <h2 className="text-4xl font-extrabold text-center mb-10">My Requests</h2>
+        <h2 className="text-4xl font-extrabold text-center mb-10">
+          My Requests
+        </h2>
 
         {successMessage && (
-          <p className="text-center text-green-400 text-lg font-semibold bg-green-900 bg-opacity-20 p-3 rounded-lg shadow-md">
-            {successMessage}
-          </p>
+          <div className="flex items-center justify-center mb-6 text-white text-lg font-semibold bg-gradient-to-br from-gray-800 via-gray-900 to-black border border-gray-700 bg-opacity-80 p-4 rounded-lg shadow-lg transition-all animate-fade-in">
+            ✅ {successMessage}
+          </div>
         )}
 
         {error && (
@@ -87,15 +96,19 @@ const Request = () => {
         )}
 
         {loading ? (
-          <Loader/>
+          <Loader />
         ) : requests.length === 0 ? (
-          <p className="text-center text-gray-400 text-lg">No requests found.</p>
+          <p className="text-center text-gray-400 text-lg">
+            No requests found.
+          </p>
         ) : (
-          <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-8 max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-8 max-w-6xl mx-auto ">
             {requests.map((user) => (
               <div
                 key={user._id}
-                className="bg-gray-800 shadow-lg rounded-xl p-6 flex flex-col items-center transition transform hover:scale-105"
+                className="relative bg-gradient-to-br from-gray-800 via-gray-900 to-gray-950 
+                 shadow-xl rounded-2xl p-6 flex flex-col items-center transition-all 
+                 transform hover:scale-105 hover:shadow-2xl border border-gray-700 overflow-hidden"
               >
                 {/* Profile Picture */}
                 <img
@@ -108,34 +121,43 @@ const Request = () => {
                 />
 
                 {/* User Info */}
-                <h3 className="text-lg font-bold mt-3">{user.fromUserId?.name || "Unknown"}</h3>
-                <p className="text-sm text-gray-400">{user.fromUserId?.gender || "Unknown"}</p>
+                <h3 className="text-lg font-bold mt-3">
+                  {user.fromUserId?.name || "Unknown"}
+                </h3>
+                <p className="text-sm text-gray-400">
+                  {user.fromUserId?.gender || "Unknown"}
+                </p>
                 <p className="text-sm text-gray-500">
                   Skills: {user.fromUserId?.skills?.join(", ") || "N/A"}
                 </p>
 
-                {/* Buttons */}
-                <div className="mt-4 flex space-x-4">
-                  <button
-                    onClick={() => reviewRequest("accepted", user._id)}
-                    className="bg-green-600 hover:bg-green-700 text-white text-sm font-semibold px-5 py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
-                  >
-                    Accept
-                  </button>
-                  <button
-                    onClick={() => reviewRequest("rejected", user._id)}
-                    className="bg-red-600 hover:bg-red-700 text-white text-sm font-semibold px-5 py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
-                  >
-                    Decline
-                  </button>
-                </div>
+                {/* Loading Indicator Inside Card */}
+                {processing[user._id] ? (
+                  <Loader2
+                    className="animate-spin text-blue-500 mt-4"
+                    size={24}
+                  />
+                ) : (
+                  <div className="mt-4 flex space-x-4">
+                    <button
+                      onClick={() => reviewRequest("accepted", user._id)}
+                      className="bg-green-600 hover:bg-green-700 text-white text-sm font-semibold px-5 py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
+                    >
+                      Accept
+                    </button>
+                    <button
+                      onClick={() => reviewRequest("rejected", user._id)}
+                      className="bg-red-600 hover:bg-red-700 text-white text-sm font-semibold px-5 py-2 rounded-lg shadow-md transition-transform transform hover:scale-105"
+                    >
+                      Decline
+                    </button>
+                  </div>
+                )}
               </div>
             ))}
           </div>
         )}
       </div>
-
-    
     </div>
   );
 };

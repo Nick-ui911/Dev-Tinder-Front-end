@@ -2,7 +2,8 @@ import React from "react";
 
 const TermsAndConditions = () => {
   return (
-    <div className=" my-18 max-w-3xl mx-auto p-6 bg-gray-800 shadow-lg rounded-2xl">
+   <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-900">
+     <div className="my-10 mt-30 max-w-3xl mx-auto p-6 bg-gradient-to-br from-gray-800 via-gray-900 to-gray-950   text-white shadow-lg rounded-2xl">
       <h1 className="text-3xl font-bold mb-4">Terms and Conditions</h1>
       <p className="mb-4 text-white">
         Welcome to DevWorld! By using our platform, you agree to comply with the following terms and conditions.
@@ -43,6 +44,7 @@ const TermsAndConditions = () => {
         If you have any questions regarding these terms, please contact us at nbaghel392@gmail.com.
       </p>
     </div>
+   </div>
   );
 };
 

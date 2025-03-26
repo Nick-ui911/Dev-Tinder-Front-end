@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 const Loader = () => {
   return (
-    <div className="fixed inset-0 flex justify-center items-center bg-gray-900">
+    <div className="fixed inset-0 flex justify-center items-centerbg-gradient-to-br from-gray-900 via-black to-gray-900">
       <motion.div className="flex gap-2">
         {[0, 1, 2].map((i) => (
           <motion.span

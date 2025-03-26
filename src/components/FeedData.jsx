@@ -11,7 +11,7 @@ function FeedData() {
   const feeds = useSelector((store) => store.feed.feeds);
   const user = useSelector((store) => store.user);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState(""); // 🔍 Search state
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchFeedData = async () => {
@@ -21,7 +21,6 @@ function FeedData() {
           withCredentials: true,
         });
         dispatch(addFeed(response.data.data));
-        // console.log(response)
       } catch (error) {
         console.error("Error fetching feeds:", error);
       } finally {
@@ -33,32 +32,45 @@ function FeedData() {
   }, [dispatch]);
 
   const handleRemoveFeed = (feedId) => {
-    dispatch(addFeed(feeds.filter(feed => feed._id !== feedId))); // 🔥 Updates Redux instantly
+    dispatch(addFeed(feeds.filter((feed) => feed._id !== feedId)));
   };
-  
 
   // Filter feeds based on search query
-  const filteredFeeds = feeds.filter((feed) =>
-    !searchQuery || (Array.isArray(feed.skills) &&
-      feed.skills.some((skill) =>
-        skill.toLowerCase().includes(searchQuery.toLowerCase())
-      ))
+  const filteredFeeds = feeds.filter(
+    (feed) =>
+      !searchQuery ||
+      (Array.isArray(feed.skills) &&
+        feed.skills.some((skill) =>
+          skill.toLowerCase().includes(searchQuery.toLowerCase())
+        ))
   );
-  
+
   return (
-    <div className="min-h-screen my-20 p-8 bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#334155] text-white">
+    <div className="min-h-screen px-6 py-12 bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white">
       {!user ? (
-        <p className="text-red-500 text-center text-lg">Login first</p>
+        <p className="text-white text-center text-lg">
+          Please log in to view user feeds
+        </p>
       ) : (
         <>
-          {/* 🔍 Search Input */}
-          <div className="mb-6 flex justify-center">
+          {/* 🏆 Improved Heading */}
+          <div className="text-center mt-14 mb-8">
+            <h1 className="text-4xl font-extrabold text-blue-400 drop-shadow-lg">
+              Connect with Professionals & Discover Opportunities
+            </h1>
+            <p className="text-gray-300 text-lg mt-2">
+              Explore skills and find the right talent or opportunities.
+            </p>
+          </div>
+
+          {/* 🔍 Styled Search Input */}
+          <div className="mb-8 flex justify-center">
             <input
               type="text"
-              placeholder="Search by skills..."
+              placeholder="🔍 Search by skills..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full max-w-md px-4 py-2 text-white border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full max-w-lg px-5 py-3 text-white bg-gray-800 border border-gray-600 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400"
             />
           </div>
 
@@ -69,12 +81,18 @@ function FeedData() {
           ) : filteredFeeds.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {filteredFeeds.map((feed) => (
-              <FeedCard key={feed._id} {...feed} handleRemoveFeed={handleRemoveFeed} />
+                <FeedCard
+                  key={feed._id}
+                  {...feed}
+                  handleRemoveFeed={handleRemoveFeed}
+                />
               ))}
             </div>
           ) : (
             <p className="text-gray-500 text-xl font-bold text-center mt-10">
-              {searchQuery ? "No results found for your search!" : "🎉 No more feeds available! 🎉"}
+              {searchQuery
+                ? "No results found for your search!"
+                : "🎉 No more feeds available! 🎉"}
             </p>
           )}
         </>

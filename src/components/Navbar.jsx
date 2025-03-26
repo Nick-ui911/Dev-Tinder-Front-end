@@ -36,7 +36,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="fixed top-0 w-full h-16 flex items-center justify-between px-4 md:px-6 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shadow-lg z-10">
+    <div className="fixed top-0 w-full h-20 flex items-center justify-between px-4 md:px-6 bg-gradient-to-r from-gray-900 via-black to-gray-900 shadow-lg z-10">
       {/* Logo */}
       <Link
         to="/"
@@ -49,15 +49,15 @@ const Navbar = () => {
       <div className="hidden md:flex items-center gap-6 text-white text-xl md:text-2xl">
         <Link
           to={location.pathname === "/feeddata" ? "/" : "/feeddata"}
-          className="hover:text-gray-200 transition"
+          className="hover:text-gray-300 transition"
         >
           {location.pathname === "/feeddata" ? <FiHome /> : <FiDatabase />}
         </Link>
-        <Link to="/contact" className="hover:text-gray-200 transition">
+        <Link to="/contact" className="hover:text-gray-300 transition">
           <IoMdContacts />
         </Link>
         {user && (
-          <Link to="/profile" className="hover:text-gray-200 transition">
+          <Link to="/profile" className="hover:text-gray-300 transition">
             <FiUser />
           </Link>
         )}
@@ -69,7 +69,7 @@ const Navbar = () => {
           <button onClick={() => setDropdownOpen(!dropdownOpen)} className="focus:outline-none">
             <img
               alt="User Avatar"
-              className="w-8 h-8 md:w-10 md:h-10 rounded-full border border-white"
+              className="w-8 h-8 md:w-10 md:h-10 rounded-full border border-white/30"
               src={
                 user?.PhotoUrl ||
                 "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
@@ -77,7 +77,7 @@ const Navbar = () => {
             />
           </button>
         ) : (
-          <Link to="/login" className="bg-white text-indigo-500 px-3 py-1 md:px-4 md:py-2 rounded-full shadow-md hover:bg-indigo-100 transition">
+          <Link to="/login" className="bg-red-600 text-white px-3 py-1 md:px-4 md:py-2 rounded-full shadow-md hover:bg-red-700 transition">
             Login
           </Link>
         )}

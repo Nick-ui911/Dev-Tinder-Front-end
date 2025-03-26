@@ -108,8 +108,8 @@ const EditProfile = () => {
   };
 
   return (
-    <div className="flex flex-col mt-16 justify-center items-center min-h-screen p-6 bg-gray-800 text-white">
-      <div className="bg-gray-900 p-8 rounded-xl shadow-xl w-full max-w-lg">
+    <div className="flex flex-col mt-16 justify-center items-center min-h-screen p-6 bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white">
+      <div className="bg-gradient-to-br from-gray-800 via-gray-900 to-black border border-gray-700 p-8 rounded-xl shadow-xl w-full max-w-lg">
         <h2 className="text-3xl font-bold mb-6 text-center">Edit Profile</h2>
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
         {success && (

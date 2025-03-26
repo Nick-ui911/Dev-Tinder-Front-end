@@ -53,7 +53,7 @@ const Chat = () => {
   useEffect(() => {
     fetchProfile();
   }, []);
-
+//  this is because in reload the user is disappear whom we are chatting with;
   useEffect(() => {
     const foundConnection = connections.find(
       (connection) => connection._id === connectionUserId
