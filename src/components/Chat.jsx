@@ -168,8 +168,8 @@ const Chat = () => {
     return <NotPremium/>
   }
   return (
-    <div className="flex flex-col h-screen bg-gray-900 text-white overflow-hidden">
-      <header className="bg-gray-800 p-4 flex items-center gap-3 shadow-lg sticky top-0 z-10">
+    <div className="flex flex-col h-screen bg-gradient-to-br from-gray-800 via-gray-900 to-gray-950  text-white overflow-hidden">
+      <header className="bg-gradient-to-r from-gray-900 via-black to-gray-900 p-4 flex items-center gap-3 shadow-lg sticky top-0 z-10">
         <button
           onClick={() => navigate("/connections")}
           className="p-2 rounded-full hover:bg-gray-700"
@@ -197,8 +197,8 @@ const Chat = () => {
             <div
               className={`max-w-xs sm:max-w-md p-3 rounded-lg ${
                 msg.senderId === userId
-                  ? "bg-blue-500 text-black rounded-br-none"
-                  : "bg-gray-700 text-white rounded-bl-none"
+                  ? "bg-gradient-to-r from-blue-500 to-purple-500 text-black rounded-br-none"
+                  : "bg-gradient-to-r from-gray-900 via-black to-gray-900 text-white rounded-bl-none"
               }`}
             >
               <div className="text-xs opacity-50 mb-1">
