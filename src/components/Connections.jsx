@@ -21,6 +21,7 @@ const Connections = () => {
   );
 
   const fetchConnections = async () => {
+    setLoading(true);
     try {
       const response = await axios.get(`${BASE_URL}/user/connections`, {
         withCredentials: true,
@@ -36,6 +37,7 @@ const Connections = () => {
 
   const handleUnfollow = async (userId) => {
     try {
+      setLoading(true);
       await axios.delete(`${BASE_URL}/user/unfollow/${userId}`, {
         withCredentials: true,
       });
@@ -44,16 +46,14 @@ const Connections = () => {
       );
     } catch (error) {
       console.error("Error unfollowing user", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (connections.length === 0) {
-      fetchConnections();
-    } else {
-      setLoading(false);
-    }
-  }, [dispatch, connections]);
+    fetchConnections();
+  }, [dispatch]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 px-4 py-12 text-white w-full overflow-hidden mt-16">
@@ -77,59 +77,61 @@ const Connections = () => {
         <p className="text-center text-gray-400">No connections found.</p>
       ) : (
         <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-6 w-full max-w-6xl mx-auto">
-        {filteredConnections
-          .filter((user) => user && user._id)
-          .map((user, index) => (
-            <div
-              key={user?._id || index}
-              className="relative bg-gradient-to-br from-gray-800/60 to-gray-900/60 
+          {filteredConnections
+            .filter((user) => user && user._id)
+            .map((user, index) => (
+              <div
+                key={user?._id || index}
+                className="relative bg-gradient-to-br from-gray-800/60 to-gray-900/60 
                          backdrop-blur-lg shadow-xl rounded-xl p-6 flex flex-col items-center 
                          "
-            >
-              {/* Background Glow Effect */}
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-indigo-500/20 
-                              opacity-50 blur-2xl rounded-xl pointer-events-none"></div>
-      
-              {/* Profile Picture */}
-              <img
-                src={
-                  user?.PhotoUrl ||
-                  "https://www.shutterstock.com/image-vector/user-profile-icon-vector-avatar-600nw-2220431045.jpg"
-                }
-                alt={user?.name || "User"}
-                className="w-24 h-24 rounded-full border-4 border-blue-500 shadow-lg hover:shadow-xl transition"
-              />
-      
-              {/* User Info */}
-              <h3 className="text-xl font-semibold mt-3 text-white">
-                {user?.name || "Unknown User"}
-              </h3>
-              <p className="text-gray-300 text-sm">{user?.gender || "N/A"}</p>
-              <p className="text-gray-400 text-sm">
-                Skill: {user?.skill || "N/A"}
-              </p>
-      
-              {/* Buttons */}
-              <div className="flex gap-4 mt-4">
-                <button
-                  onClick={() => handleUnfollow(user?._id)}
-                  className="flex items-center bg-red-600 hover:bg-red-700 text-white px-4 py-2 
+              >
+                {/* Background Glow Effect */}
+                <div
+                  className="absolute inset-0 bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-indigo-500/20 
+                              opacity-50 blur-2xl rounded-xl pointer-events-none"
+                ></div>
+
+                {/* Profile Picture */}
+                <img
+                  src={
+                    user?.PhotoUrl ||
+                    "https://www.shutterstock.com/image-vector/user-profile-icon-vector-avatar-600nw-2220431045.jpg"
+                  }
+                  alt={user?.name || "User"}
+                  className="w-24 h-24 rounded-full border-4 border-blue-500 shadow-lg hover:shadow-xl transition"
+                />
+
+                {/* User Info */}
+                <h3 className="text-xl font-semibold mt-3 text-white">
+                  {user?.name || "Unknown User"}
+                </h3>
+                <p className="text-gray-300 text-sm">{user?.gender || "N/A"}</p>
+                <p className="text-gray-400 text-sm">
+                  Skill: {user?.skill || "N/A"}
+                </p>
+
+                {/* Buttons */}
+                <div className="flex gap-4 mt-4">
+                  <button
+                    onClick={() => handleUnfollow(user?._id)}
+                    className="flex items-center bg-red-600 hover:bg-red-700 text-white px-4 py-2 
                              rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md"
-                >
-                  <AiOutlineUserDelete className="mr-2" /> Unfollow
-                </button>
-                <Link to={`/chat/${user?._id}`}>
-                  <button className="flex items-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 
-                                     rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md"
                   >
-                    <FiMessageSquare className="mr-2" /> Chat
+                    <AiOutlineUserDelete className="mr-2" /> Unfollow
                   </button>
-                </Link>
+                  <Link to={`/chat/${user?._id}`}>
+                    <button
+                      className="flex items-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 
+                                     rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md"
+                    >
+                      <FiMessageSquare className="mr-2" /> Chat
+                    </button>
+                  </Link>
+                </div>
               </div>
-            </div>
-          ))}
-      </div>
-      
+            ))}
+        </div>
       )}
     </div>
   );

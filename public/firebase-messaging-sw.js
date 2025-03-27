@@ -22,7 +22,7 @@ const messaging = firebase.messaging();
 
 // Handle background messages
 messaging.onBackgroundMessage((payload) => {
-  console.log("📩 Received Background Notification:", payload);
+  // console.log("📩 Received Background Notification:", payload);
 
   if (!payload.notification) return; // Prevent errors
 
@@ -41,4 +41,13 @@ messaging.onBackgroundMessage((payload) => {
       });
     }
   });
+});
+// Handle notification click
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close(); // Close the notification
+
+  // Open the specified URL in a new tab or window
+  event.waitUntil(
+    clients.openWindow(event.notification.data.click_action) // Using the `click_action` URL
+  );
 });
