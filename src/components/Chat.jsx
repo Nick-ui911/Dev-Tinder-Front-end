@@ -196,7 +196,7 @@ const Chat = () => {
             }`}
           >
             <div
-              className={`max-w-xs sm:max-w-md p-3 rounded-lg ${
+              className={`max-w-xs sm:max-w-md p-3 mb-10 rounded-lg ${
                 msg.senderId === userId
                   ? "bg-gradient-to-r from-blue-500 to-purple-500 text-black rounded-br-none"
                   : "bg-gradient-to-r from-gray-900 via-black to-gray-900 text-white rounded-bl-none"
