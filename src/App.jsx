@@ -5,6 +5,8 @@ import Store from "./utils/Store";
 import OfflineScreen from "./components/offlineScreen";
 import Home from "./components/Home";
 import Loader from "./components/Loader";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Lazy load components
 const Login = lazy(() => import("./components/Login"));
@@ -66,6 +68,9 @@ const App = () => {
             <Route path="/chat/:connectionUserId" element={<Chat />} />
           </Routes>
         </Suspense>
+        
+        {/* ✅ Toast Container for Notifications */}
+        <ToastContainer position="top-right" autoClose={5000} hideProgressBar />
       </BrowserRouter>
     </Provider>
   );
