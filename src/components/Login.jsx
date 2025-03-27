@@ -5,6 +5,7 @@ import { addUser } from "../utils/UserSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
+import { requestNotificationPermission } from "../utils/firebase";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -27,7 +28,10 @@ const Login = () => {
         { withCredentials: true }
       );
       dispatch(addUser(res.data));
+
       navigate("/feeddata");
+      // ✅ Call handleLogin with actual userId after login
+      handleLogin(res.data._id);
     } catch (error) {
       setError(error?.response?.data || "Login failed. Try again.");
     } finally {
@@ -35,13 +39,17 @@ const Login = () => {
     }
   };
 
+  const handleLogin = async (userId) => {
+    if (!userId) return;
+    await requestNotificationPermission(userId);
+  };
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900">
-     
-
       {!loading && (
-        <div className="bg-gradient-to-br from-gray-800/60 to-gray-900/60 
-                         backdrop-blur-lg  p-8 rounded-xl shadow-2xl w-full sm:w-96">
+        <div
+          className="bg-gradient-to-br from-gray-800/60 to-gray-900/60 
+                         backdrop-blur-lg  p-8 rounded-xl shadow-2xl w-full sm:w-96"
+        >
           <h2 className="text-3xl font-extrabold text-center text-white mb-6">
             Login
           </h2>
@@ -81,15 +89,15 @@ const Login = () => {
             </div>
 
             <button
-            type="submit"
-            className="w-full p-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:bg-blue-600 transition flex justify-center items-center"
-          >
-            {loading ? (
-              <span className="animate-spin border-4 border-white border-t-transparent rounded-full h-6 w-6"></span>
-            ) : (
-              "Login"
-            )}
-          </button>
+              type="submit"
+              className="w-full p-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:bg-blue-600 transition flex justify-center items-center"
+            >
+              {loading ? (
+                <span className="animate-spin border-4 border-white border-t-transparent rounded-full h-6 w-6"></span>
+              ) : (
+                "Login"
+              )}
+            </button>
           </form>
 
           <div className="text-center mt-4">
