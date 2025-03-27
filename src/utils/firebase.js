@@ -39,30 +39,30 @@ export const requestNotificationPermission = async (userId) => {
 };
 
 
-// ✅ Listen for foreground messages
-onMessage(messaging, (payload) => {
-  // console.log("📩 Foreground Notification Received:", payload);
+// // ✅ Listen for foreground messages
+// onMessage(messaging, (payload) => {
+//   // console.log("📩 Foreground Notification Received:", payload);
 
-  // ✅ Ignore if notification is already displayed by FCM
-  if (!payload.notification) return;
+//   // ✅ Ignore if notification is already displayed by FCM
+//   if (!payload.notification) return;
 
-  // ✅ Check if user is inside the chat component
-  const currentPath = window.location.pathname;
-  const isInChat = currentPath.startsWith("/chat"); // Adjust based on your app's chat route
-  if (!isInChat) {
-    setTimeout(() => {
-      toast.info(`📩 ${payload.notification.title}: ${payload.notification.body}`, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
-    }, 0);
-  }
+//   // ✅ Check if user is inside the chat component
+//   const currentPath = window.location.pathname;
+//   const isInChat = currentPath.startsWith("/chat"); // Adjust based on your app's chat route
+//   if (!isInChat) {
+//     setTimeout(() => {
+//       toast.info(`📩 ${payload.notification.title}: ${payload.notification.body}`, {
+//         position: "top-right",
+//         autoClose: 5000,
+//         hideProgressBar: false,
+//         closeOnClick: true,
+//         pauseOnHover: true,
+//         draggable: true,
+//         progress: undefined,
+//       });
+//     }, 0);
+//   }
   
-});
+// });
 
 export { messaging, getToken, onMessage };
