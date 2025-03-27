@@ -22,6 +22,6 @@ messaging.onBackgroundMessage((payload) => {
 
   self.registration.showNotification(payload.notification.title, {
     body: payload.notification.body,
-    icon: payload.notification.image || "/logodevworld.jpg",
+    icon:"/logodevworld.jpg",
   });
 });
