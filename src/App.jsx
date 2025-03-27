@@ -5,8 +5,10 @@ import Store from "./utils/Store";
 import OfflineScreen from "./components/offlineScreen";
 import Home from "./components/Home";
 import Loader from "./components/Loader";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { messaging } from "./utils/firebase"; // Ensure correct import
+import { onMessage } from "firebase/messaging";
 
 // Lazy load components
 const Login = lazy(() => import("./components/Login"));
@@ -32,6 +34,30 @@ const Premium = lazy(() => import("./components/Premium"));
 const Chat = lazy(() => import("./components/Chat"));
 
 const App = () => {
+  useEffect(() => {
+    const unsubscribe = onMessage(messaging, (payload) => {
+      console.log("📩 Foreground Notification Received:", payload);
+
+      if (!payload.notification) return;
+
+      const currentPath = window.location.pathname;
+      const isInChat = currentPath.startsWith("/chat"); // Adjust based on your app's chat route
+
+      if (!isInChat) {
+        toast.info(`📩 ${payload.notification.title}: ${payload.notification.body}`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
+    });
+
+    return () => unsubscribe(); // Cleanup listener on unmount
+  }, []);
   return (
     <Provider store={Store}>
       <BrowserRouter basename="/">

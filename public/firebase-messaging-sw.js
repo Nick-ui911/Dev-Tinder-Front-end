@@ -18,10 +18,13 @@ const messaging = firebase.messaging();
 
 // Handle background messages
 messaging.onBackgroundMessage((payload) => {
-  console.log("Received background message ", payload);
+  // console.log("📩 Background Notification Received:", payload);
 
-  self.registration.showNotification(payload.notification.title, {
-    body: payload.notification.body,
-    icon:"/logodevworld.jpg",
+  // ✅ Use `payload.data` instead of `payload.notification` (Prevents duplicate notifications)
+  if (!payload.data) return;
+
+  self.registration.showNotification(payload.data.title, {
+    body: payload.data.body,
+    icon: "/logodevworld.jpg",
   });
 });
