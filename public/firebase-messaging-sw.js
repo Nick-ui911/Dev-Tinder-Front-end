@@ -38,6 +38,7 @@ messaging.onBackgroundMessage((payload) => {
         body: payload.notification.body,
         icon: "/logodevworld.jpg", // Make sure this path is correct!
         tag: payload.messageId, // Helps prevent duplicates
+        data: { click_action: payload.data.click_action },
       });
     }
   });

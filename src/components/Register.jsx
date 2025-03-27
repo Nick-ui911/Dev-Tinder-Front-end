@@ -5,6 +5,7 @@ import { addUser } from "../utils/UserSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { requestNotificationPermission } from "../utils/firebase";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -62,12 +63,17 @@ const Register = () => {
       );
       dispatch(addUser(response.data.data));
       navigate("/profile");
+      handleLogin(response.data.data._id);
     } catch (error) {
       setErrorMessage("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
   };
+    const handleLogin = async (userId) => {
+      if (!userId) return;
+      await requestNotificationPermission(userId);
+    };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 animate-fade-in">

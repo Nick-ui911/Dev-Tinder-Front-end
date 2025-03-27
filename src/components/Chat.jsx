@@ -9,6 +9,7 @@ import { Send, ArrowLeft } from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
 import NotPremium from "./NotPremium";
 import { addUser } from "../utils/UserSlice";
+import { Send as SendIcon, Mic } from 'lucide-react';
 
 let socket;
 
@@ -214,24 +215,82 @@ const Chat = () => {
         <div ref={messagesEndRef} />
       </main>
 
-      <footer className="bg-gray-800 p-4 flex items-center gap-2 sticky bottom-0 shadow-md">
-        <button onClick={() => setShowEmojiPicker(!showEmojiPicker)}>😊</button>
-        {showEmojiPicker && <EmojiPicker onEmojiClick={handleEmojiClick} />}
-        <input
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          onKeyDown={handleKeyPress}
-          type="text"
-          className="flex-1 p-2 border rounded-lg focus:outline-none bg-gray-700 text-white"
-          placeholder="Type a message..."
-        />
-        <button
-          onClick={sendMessage}
-          className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700"
-        >
-          <Send size={24} color="white" />
-        </button>
-      </footer>
+      <footer className="fixed bottom-0 left-0 right-0 bg-gradient-to-br from-gray-800 via-gray-900 to-black border-t border-gray-700 shadow-2xl z-50">
+  <div className="max-w-4xl mx-auto px-3 py-2 flex items-center space-x-2">
+    {/* Emoji Picker Trigger */}
+    <div className="relative">
+      <button 
+        onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+        className="group relative p-2 rounded-full hover:bg-gray-700 transition-all duration-300 ease-in-out transform hover:scale-110 active:scale-95"
+      >
+        <span className="text-2xl sm:text-3xl transition-transform group-hover:rotate-12">
+          😊
+        </span>
+        {/* Subtle pulse effect */}
+        <span className="absolute inset-0 bg-blue-500 rounded-full animate-ping opacity-30 group-hover:opacity-50"></span>
+      </button>
+    </div>
+
+{/* Emoji Picker */}
+{showEmojiPicker && (
+  <div className="absolute bottom-full mb-2 right-0 sm:right-10 w-full max-w-xs
+    transform -translate-x-2 sm:translate-x-0
+    scale-90 sm:scale-100 origin-bottom-right">
+    <EmojiPicker onEmojiClick={handleEmojiClick} />
+  </div>
+)}
+
+    {/* Message Input */}
+    <div className="flex-1 relative">
+      <input
+        value={newMessage}
+        onChange={(e) => setNewMessage(e.target.value)}
+        onKeyDown={handleKeyPress}
+        type="text"
+        className="w-full pl-4 pr-10 py-2 text-sm sm:text-base 
+        bg-gray-700/50 backdrop-blur-sm 
+        border border-gray-600/30 
+        rounded-full 
+        text-white 
+        placeholder-gray-400 
+        focus:outline-none 
+        focus:ring-2 focus:ring-blue-500/50 
+        transition-all duration-300 
+        ease-in-out"
+        placeholder="Type a message..."
+      />
+      {/* Microphone icon */}
+      <button className="absolute right-12 top-1/2 -translate-y-1/2 opacity-50 hover:opacity-100 transition-opacity">
+        <Mic size={20} className="text-gray-300" />
+      </button>
+    </div>
+
+    {/* Send Button */}
+    <button
+      onClick={sendMessage}
+      disabled={!newMessage.trim()}
+      className="
+        bg-gradient-to-r from-blue-600 to-purple-600 
+        text-white 
+        p-2 
+        rounded-full 
+        hover:from-blue-700 hover:to-purple-700 
+        transition-all duration-300 
+        ease-in-out 
+        transform 
+        hover:scale-110 
+        active:scale-95
+        disabled:opacity-30 
+        disabled:cursor-not-allowed
+        flex items-center justify-center
+        shadow-lg
+        hover:shadow-xl
+      "
+    >
+      <Send size={20} sm:size={24} />
+    </button>
+  </div>
+</footer>
     </div>
   );
 };
