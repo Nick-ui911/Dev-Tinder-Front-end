@@ -36,7 +36,8 @@ messaging.onBackgroundMessage((payload) => {
     if (!isDuplicate) {
       self.registration.showNotification(payload.notification.title, {
         body: payload.notification.body,
-        icon: "https://devworld.in/logodevworld.jpg", // Make sure this path is correct!
+        icon: "https://devworld.in/logodevworld.png", // Use PNG
+        badge: "https://devworld.in/logodevworld.png", // Small icon support // Make sure this path is correct!
         tag: payload.messageId, // Helps prevent duplicates
         data: { click_action: payload.data.click_action },
       });
