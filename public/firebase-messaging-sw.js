@@ -46,15 +46,16 @@ messaging.onBackgroundMessage((payload) => {
 });
 // Handle notification click
 self.addEventListener("notificationclick", (event) => {
-  event.notification.close();
+  event.notification.close(); // Close notification
 
   event.waitUntil(
-    clients.matchAll({ type: "window" }).then((clientList) => {
-      if (clientList.length > 0) {
-        return clientList[0].focus();
-      }
-      return clients.openWindow(event.notification.data.click_action);
+    new Promise((resolve) => {
+      setTimeout(() => {
+        clients.openWindow(event.notification.data.click_action); 
+        resolve();
+      }, 300); // Short delay to prevent issues
     })
   );
 });
+
 
