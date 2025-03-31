@@ -5,6 +5,8 @@ import Store from "./utils/Store";
 import OfflineScreen from "./components/offlineScreen";
 import Home from "./components/Home";
 import Loader from "./components/Loader";
+import { ToastContainer } from "react-toastify";
+import ForeGroundNotificationHandler from "./components/ForeGroundNotificationHandler";
 
 // Lazy load components
 const Login = lazy(() => import("./components/Login"));
@@ -33,6 +35,8 @@ const App = () => {
   return (
     <Provider store={Store}>
       <BrowserRouter basename="/">
+      <ToastContainer /> {/* Global toast container */}
+      <ForeGroundNotificationHandler /> {/* ✅ Handles notifications correctly */}
         <OfflineScreen />
         <Suspense fallback={<Loader />}>
           <Routes>
