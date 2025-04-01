@@ -20,6 +20,7 @@ const Chat = () => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [isPremium, setIsPremium] = useState(null); // New state to track premium status
+  const [loading, setLoading] = useState(true);
 
   const { connectionUserId } = useParams();
   const navigate = useNavigate();
@@ -55,29 +56,32 @@ const Chat = () => {
     fetchProfile();
   }, []);
 //  this is because in reload the user is disappear whom we are chatting with;
-  useEffect(() => {
-    const foundConnection = connections.find(
-      (connection) => connection._id === connectionUserId
-    );
-    if (foundConnection) {
-      setConnectionUser(foundConnection);
-    } else {
-      fetchConnectionFromApi();
-    }
-  }, [connections, connectionUserId]);
 
-  const fetchConnectionFromApi = async () => {
-    try {
-      const res = await axios.get(`${BASE_URL}/user/connections`, {
-        withCredentials: true,
-      });
-      setConnectionUser(res.data.data);
-      dispatch(addConnections(res.data.data));
-    } catch (error) {
-      console.error("Failed to fetch connection:", error);
-    }
-  };
+useEffect(() => {
+  const foundConnection = connections.find(
+    (connection) => connection._id === connectionUserId
+  );
+  if (foundConnection) {
+    setConnectionUser(foundConnection);
+    setLoading(false); // Data is now ready
+  } else {
+    fetchConnectionFromApi();
+  }
+}, [connections, connectionUserId]);
 
+const fetchConnectionFromApi = async () => {
+  try {
+    const res = await axios.get(`${BASE_URL}/user/connections`, {
+      withCredentials: true,
+    });
+    setConnectionUser(res.data.data);
+    dispatch(addConnections(res.data.data));
+    setLoading(false); // Data is now ready
+  } catch (error) {
+    console.error("Failed to fetch connection:", error);
+    setLoading(false); // In case of error, still stop the loading state
+  }
+};
   const fetchChat = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/chat/${connectionUserId}`, {
@@ -178,7 +182,7 @@ const Chat = () => {
           <ArrowLeft size={24} color="white" />
         </button>
         <h2 className="font-semibold text-lg flex-1 text-center">
-          {connectionUser?.name || "User Name"}
+        {loading ? "Loading..." : connectionUser?.name || "User Name"}
           {onlineUsers?.includes(connectionUserId) ? (
             <span className="text-green-500 ml-2">● Online</span>
           ) : (

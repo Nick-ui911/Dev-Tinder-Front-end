@@ -82,9 +82,9 @@ const Connections = () => {
             .map((user, index) => (
               <div
                 key={user?._id || index}
-                className="relative bg-gradient-to-br from-gray-800/60 to-gray-900/60 
-                         backdrop-blur-lg shadow-xl rounded-xl p-6 flex flex-col items-center 
-                         "
+                className="relative bg-gradient-to-br from-gray-800 via-gray-900 to-gray-950 
+                 shadow-xl rounded-2xl p-6 flex flex-col items-center transition-all 
+                 transform hover:scale-105 hover:shadow-2xl border border-gray-700 overflow-hidden"
               >
                 {/* Background Glow Effect */}
                 <div
