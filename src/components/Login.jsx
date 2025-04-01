@@ -43,18 +43,13 @@ const Login = () => {
   };
   const handleGoogleLogin = async () => {
     try {
-      // ✅ Sign in with Google
+      setLoading(true); // Use the same loading state
+      setError("");
+      
       const result = await signInWithPopup(auth, provider);
-
-      // ✅ Get Firebase ID Token
       const idToken = await result.user.getIdToken();
-
-      // ✅ Get user details
       const { email, displayName: name, photoURL: photo } = result.user;
 
-      // console.log("User Info:", { email, name, photo });
-
-      // ✅ Send token to backend
       const res = await axios.post(
         BASE_URL + "/google-login",
         {
@@ -66,14 +61,13 @@ const Login = () => {
         }
       );
 
-      // console.log("Backend Response:", res.data);
-
-      // ✅ Update Redux state
       dispatch(addUser(res.data));
-
       navigate("/feeddata");
+      handleLogin(res.data._id);
     } catch (error) {
       console.error("Google Login Error:", error);
+      setError("Google sign-in failed. Please try again.");
+      setLoading(false);
     }
   };
 
