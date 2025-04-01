@@ -34,7 +34,7 @@ const Login = () => {
 
       navigate("/feeddata");
       // ✅ Call handleLogin with actual userId after login
-      handleLogin(res.data._id);
+      handleFcmToken(res.data._id);
     } catch (error) {
       setError(error?.response?.data || "Login failed. Try again.");
     } finally {
