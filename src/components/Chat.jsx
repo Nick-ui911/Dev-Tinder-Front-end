@@ -55,56 +55,33 @@ const Chat = () => {
   useEffect(() => {
     fetchProfile();
   }, []);
-  //  this is because in reload the user is disappear whom we are chatting with;
+//  this is because in reload the user is disappear whom we are chatting with;
 
-  useEffect(() => {
-    const foundConnection = connections.find(
-      (connection) => connection._id === connectionUserId
-    );
-    if (foundConnection) {
-      setConnectionUser(foundConnection);
-      setLoading(false); // Data is now ready
-    } else {
-      fetchConnectionFromApi();
-    }
-  }, [connections, connectionUserId]);
+useEffect(() => {
+  const foundConnection = connections.find(
+    (connection) => connection._id === connectionUserId
+  );
+  if (foundConnection) {
+    setConnectionUser(foundConnection);
+    setLoading(false); // Data is now ready
+  } else {
+    fetchConnectionFromApi();
+  }
+}, [connections, connectionUserId]);
 
-  const fetchConnectionFromApi = async () => {
-    try {
-      const res = await axios.get(`${BASE_URL}/user/connections`, {
-        withCredentials: true,
-      });
-      
-      console.log("API Response:", res.data);
-      
-      // res.data.data is an array of connection users
-      if (Array.isArray(res.data.data)) {
-        // Find the specific user that matches the connectionUserId
-        const foundConnection = res.data.data.find(
-          connection => connection._id === connectionUserId
-        );
-        
-        console.log("Found connection:", foundConnection);
-        
-        if (foundConnection) {
-          // Set the specific user, not the whole array
-          setConnectionUser(foundConnection);
-        } else {
-          console.warn("Connection not found in the returned data");
-        }
-        
-        // Add all connections to the Redux store
-        dispatch(addConnections(res.data.data));
-      } else {
-        console.error("Expected res.data.data to be an array but got:", typeof res.data.data);
-      }
-      
-      setLoading(false);
-    } catch (error) {
-      console.error("Failed to fetch connection:", error);
-      setLoading(false);
-    }
-  };
+const fetchConnectionFromApi = async () => {
+  try {
+    const res = await axios.get(`${BASE_URL}/user/connections`, {
+      withCredentials: true,
+    });
+    setConnectionUser(res.data.data);
+    dispatch(addConnections(res.data.data));
+    setLoading(false); // Data is now ready
+  } catch (error) {
+    console.error("Failed to fetch connection:", error);
+    setLoading(false); // In case of error, still stop the loading state
+  }
+};
   const fetchChat = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/chat/${connectionUserId}`, {
@@ -130,7 +107,7 @@ const Chat = () => {
 
   useEffect(() => {
     fetchChat();
-  }, [connectionUserId]); // Added connectionUserId dependency to refetch chat when it changes
+  }, []);
 
   useEffect(() => {
     if (!userId || !connectionUser) return;
@@ -160,7 +137,7 @@ const Chat = () => {
       socket.emit("userOffline", userId);
       socket.disconnect();
     };
-  }, [userId, connectionUser, connectionUserId]); // Added connectionUserId dependency
+  }, [userId, connectionUser]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -314,7 +291,7 @@ const Chat = () => {
         hover:shadow-xl
       "
     >
-      <Send size={20} />
+      <Send size={20} sm:size={24} />
     </button>
   </div>
 </footer>
