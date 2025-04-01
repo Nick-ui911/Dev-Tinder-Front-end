@@ -74,14 +74,20 @@ const fetchConnectionFromApi = async () => {
     const res = await axios.get(`${BASE_URL}/user/connections`, {
       withCredentials: true,
     });
-    setConnectionUser(res.data.data);
-    dispatch(addConnections(res.data.data));
-    setLoading(false); // Data is now ready
+
+    const filteredConnection = res.data.data.find(
+      (connection) => connection._id === connectionUserId
+    );
+
+    setConnectionUser(filteredConnection || null);
+    dispatch(addConnections(res.data.data)); // Store all connections in Redux
+    setLoading(false);
   } catch (error) {
     console.error("Failed to fetch connection:", error);
-    setLoading(false); // In case of error, still stop the loading state
+    setLoading(false);
   }
 };
+
   const fetchChat = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/chat/${connectionUserId}`, {
