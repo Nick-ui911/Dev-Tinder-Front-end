@@ -15,7 +15,7 @@ const messaging = firebase.messaging();
 
 // ✅ Handle background notifications
 messaging.onBackgroundMessage((payload) => {
-  console.log("📩 Received Background Notification:", payload);
+  // console.log("📩 Received Background Notification:", payload);
 
   const { title, body } = payload.notification || payload.data;
   const iconUrl = "https://devworld.in/logodevworld.png";

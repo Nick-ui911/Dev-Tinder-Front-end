@@ -263,10 +263,7 @@ const fetchConnectionFromApi = async () => {
         ease-in-out"
         placeholder="Type a message..."
       />
-      {/* Microphone icon */}
-      <button className="absolute right-12 top-1/2 -translate-y-1/2 opacity-50 hover:opacity-100 transition-opacity">
-        <Mic size={20} className="text-gray-300" />
-      </button>
+   
     </div>
 
     {/* Send Button */}
