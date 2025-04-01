@@ -45,7 +45,7 @@ const Login = () => {
     try {
       setLoading(true); // Use the same loading state
       setError("");
-      
+
       const result = await signInWithPopup(auth, provider);
       const idToken = await result.user.getIdToken();
       const { email, displayName: name, photoURL: photo } = result.user;
@@ -63,15 +63,18 @@ const Login = () => {
 
       dispatch(addUser(res.data));
       navigate("/feeddata");
-      handleLogin(res.data._id);
+      handleFcmToken(res.data._id);
     } catch (error) {
       console.error("Google Login Error:", error);
-      setError("Google sign-in failed. Please try again.");
+      // ✅ Properly set error message
+      setError(
+        error.response?.data || "Something went wrong. Please try again."
+      );
       setLoading(false);
     }
   };
 
-  const handleLogin = async (userId) => {
+  const handleFcmToken = async (userId) => {
     if (!userId) return;
     await requestNotificationPermission(userId);
   };
@@ -135,7 +138,7 @@ const Login = () => {
               <span className="mx-4 text-sm text-gray-400">OR</span>
               <div className="flex-grow border-t border-gray-600"></div>
             </div>
-            
+
             <button
               type="button"
               onClick={handleGoogleLogin}
