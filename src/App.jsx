@@ -67,7 +67,7 @@ const App = () => {
               <Route path="/request" element={<Request />} />
               <Route path="/premium" element={<Premium />} />
             </Route>
-            <Route path="/chat/:connectionUserId" element={<Chat />} />
+            <Route path="/chat/:connectionUserId" element={<Chat key={window.location.pathname}/>} />
           </Routes>
         </Suspense>
       </BrowserRouter>
