@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { BASE_URL } from "./constants";
 import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
@@ -14,6 +15,8 @@ const firebaseConfig = {
 };
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
+export const provider = new GoogleAuthProvider();
 const messaging = getMessaging(app);
 
 // ✅ Request Notification Permission & Get Token

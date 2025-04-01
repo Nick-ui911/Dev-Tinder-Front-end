@@ -6,6 +6,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
 import { requestNotificationPermission } from "../utils/firebase";
+import { signInWithPopup } from "firebase/auth";
+import { auth, provider } from "../utils/firebase";
+import { FcGoogle } from "react-icons/fc";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -36,6 +39,41 @@ const Login = () => {
       setError(error?.response?.data || "Login failed. Try again.");
     } finally {
       setLoading(false); // Hide loader
+    }
+  };
+  const handleGoogleLogin = async () => {
+    try {
+      // ✅ Sign in with Google
+      const result = await signInWithPopup(auth, provider);
+
+      // ✅ Get Firebase ID Token
+      const idToken = await result.user.getIdToken();
+
+      // ✅ Get user details
+      const { email, displayName: name, photoURL: photo } = result.user;
+
+      // console.log("User Info:", { email, name, photo });
+
+      // ✅ Send token to backend
+      const res = await axios.post(
+        BASE_URL + "/google-login",
+        {
+          idToken,
+          email,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
+      // console.log("Backend Response:", res.data);
+
+      // ✅ Update Redux state
+      dispatch(addUser(res.data));
+
+      navigate("/feeddata");
+    } catch (error) {
+      console.error("Google Login Error:", error);
     }
   };
 
@@ -97,6 +135,20 @@ const Login = () => {
               ) : (
                 "Login"
               )}
+            </button>
+            <div className="flex items-center my-4">
+              <div className="flex-grow border-t border-gray-600"></div>
+              <span className="mx-4 text-sm text-gray-400">OR</span>
+              <div className="flex-grow border-t border-gray-600"></div>
+            </div>
+            
+            <button
+              type="button"
+              onClick={handleGoogleLogin}
+              className="w-full flex items-center justify-center gap-3 bg-white hover:bg-gray-100 text-gray-800 font-medium py-3 px-4 rounded-lg transition shadow-md"
+            >
+              <FcGoogle size={24} />
+              <span>Sign in with Google</span>
             </button>
           </form>
 
