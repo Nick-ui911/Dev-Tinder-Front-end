@@ -35,8 +35,9 @@ const App = () => {
   return (
     <Provider store={Store}>
       <BrowserRouter basename="/">
-      <ToastContainer /> {/* Global toast container */}
-      <ForeGroundNotificationHandler /> {/* ✅ Handles notifications correctly */}
+        <ToastContainer /> {/* Global toast container */}
+        <ForeGroundNotificationHandler />{" "}
+        {/* ✅ Handles notifications correctly */}
         <OfflineScreen />
         <Suspense fallback={<Loader />}>
           <Routes>
@@ -67,7 +68,7 @@ const App = () => {
               <Route path="/request" element={<Request />} />
               <Route path="/premium" element={<Premium />} />
             </Route>
-            <Route path="/chat/:connectionUserId" element={<Chat key={window.location.pathname}/>} />
+            <Route path="/chat/:connectionUserId" element={<Chat />} />
           </Routes>
         </Suspense>
       </BrowserRouter>
