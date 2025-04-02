@@ -105,16 +105,10 @@ const Chat = () => {
       });
 
       setMessages(chat || []);
-      // Ensure we get the correct connection user
-      const otherUser = messages.find(
-        (msg) => msg?.senderId?._id !== userId
-      )?.senderId;
-
-      if (otherUser) {
-        setConnectionUser(otherUser); // ✅ Set as an object instead of just a name
-      } else {
-        fetchConnectionFromApi();
-      }
+     // ✅ Fetch connection user from API if Redux does not have it
+     if (!connectionUser) {
+    await  fetchConnectionFromApi();
+    }
     } catch (error) {
       console.error("Failed to fetch chat:", error);
     }
@@ -201,7 +195,7 @@ const Chat = () => {
             ? "Loading..."
             : connectionUser
             ? connectionUser.name
-            : "Unknown"}
+            : "Fetching User..."}
           {onlineUsers?.includes(connectionUserId) ? (
             <span className="text-green-500 ml-2">● Online</span>
           ) : (
