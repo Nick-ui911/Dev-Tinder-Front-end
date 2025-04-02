@@ -88,28 +88,37 @@ const fetchConnectionFromApi = async () => {
   }
 };
 
-  const fetchChat = async () => {
-    try {
-      const res = await axios.get(`${BASE_URL}/chat/${connectionUserId}`, {
-        withCredentials: true,
-      });
+const fetchChat = async () => {
+  try {
+    const res = await axios.get(`${BASE_URL}/chat/${connectionUserId}`, {
+      withCredentials: true,
+    });
 
-      const chat = res.data?.messages.map((msg) => {
-        const isCurrentUser = msg?.senderId?._id === userId;
-        return {
-          text: msg?.text,
-          name: isCurrentUser ? "You" : msg?.senderId?.name || "Unknown User",
-          date: msg?.date,
-          time: msg?.time,
-          senderId: msg?.senderId?._id,
-        };
-      });
+    const messages = res.data?.messages || [];
 
-      setMessages(chat || []);
-    } catch (error) {
-      console.error("Failed to fetch chat:", error);
+    const chat = messages.map((msg) => ({
+      text: msg?.text,
+      name: msg?.senderId?._id === userId ? "You" : msg?.senderId?.name || "Unknown User",
+      date: msg?.date,
+      time: msg?.time,
+      senderId: msg?.senderId?._id,
+    }));
+
+    setMessages(chat);
+
+    // Ensure we get the correct connection user
+    const otherUser = messages.find((msg) => msg?.senderId?._id !== userId)?.senderId;
+
+    if (otherUser) {
+      setConnectionUser(otherUser.name);
+    } else {
+      fetchConnectionFromApi();
     }
-  };
+  } catch (error) {
+    console.error("Failed to fetch chat:", error);
+  }
+};
+
 
   useEffect(() => {
     fetchChat();
