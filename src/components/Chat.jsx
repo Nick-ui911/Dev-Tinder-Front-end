@@ -74,11 +74,11 @@ const Chat = () => {
         withCredentials: true,
       });
 
-      const filteredConnection = res.data.data.find(
-        (connection) => connection._id === connectionUserId
+      const foundUser = res.data.data.find(
+        (user) => user._id === connectionUserId
       );
 
-      setConnectionUser(filteredConnection || null);
+      setConnectionUser(foundUser || null);
       dispatch(addConnections(res.data.data)); // Store all connections in Redux
       setLoading(false);
     } catch (error) {
@@ -271,6 +271,7 @@ const Chat = () => {
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               onKeyDown={handleKeyPress}
+              onFocus={() => setShowEmojiPicker(false)} // Close emoji picker when input is focused
               type="text"
               className="w-full pl-4 pr-10 py-2 text-sm sm:text-base 
         bg-gray-700/50 backdrop-blur-sm 
