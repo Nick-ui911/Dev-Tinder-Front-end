@@ -9,7 +9,7 @@ import { Send, ArrowLeft } from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
 import NotPremium from "./NotPremium";
 import { addUser } from "../utils/UserSlice";
-import { Send as SendIcon, Mic } from 'lucide-react';
+import { Send as SendIcon, Mic } from "lucide-react";
 
 let socket;
 
@@ -31,7 +31,6 @@ const Chat = () => {
 
   const userId = user?._id;
   const messagesEndRef = useRef(null);
-
 
   // To check MemberShip Type
   const fetchProfile = async () => {
@@ -55,38 +54,38 @@ const Chat = () => {
   useEffect(() => {
     fetchProfile();
   }, []);
-//  this is because in reload the user is disappear whom we are chatting with;
+  //  this is because in reload the user is disappear whom we are chatting with;
 
-useEffect(() => {
-  const foundConnection = connections.find(
-    (connection) => connection._id === connectionUserId
-  );
-  if (foundConnection) {
-    setConnectionUser(foundConnection);
-    setLoading(false); // Data is now ready
-  } else {
-    fetchConnectionFromApi();
-  }
-}, [connections, connectionUserId]);
-
-const fetchConnectionFromApi = async () => {
-  try {
-    const res = await axios.get(`${BASE_URL}/user/connections`, {
-      withCredentials: true,
-    });
-
-    const filteredConnection = res.data.data.find(
+  useEffect(() => {
+    const foundConnection = connections.find(
       (connection) => connection._id === connectionUserId
     );
+    if (foundConnection) {
+      setConnectionUser(foundConnection);
+      setLoading(false); // Data is now ready
+    } else {
+      fetchConnectionFromApi();
+    }
+  }, [connections, connectionUserId]);
 
-    setConnectionUser(filteredConnection || null);
-    dispatch(addConnections(res.data.data)); // Store all connections in Redux
-    setLoading(false);
-  } catch (error) {
-    console.error("Failed to fetch connection:", error);
-    setLoading(false);
-  }
-};
+  const fetchConnectionFromApi = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/user/connections`, {
+        withCredentials: true,
+      });
+
+      const filteredConnection = res.data.data.find(
+        (connection) => connection._id === connectionUserId
+      );
+
+      setConnectionUser(filteredConnection || null);
+      dispatch(addConnections(res.data.data)); // Store all connections in Redux
+      setLoading(false);
+    } catch (error) {
+      console.error("Failed to fetch connection:", error);
+      setLoading(false);
+    }
+  };
 
   const fetchChat = async () => {
     try {
@@ -106,6 +105,16 @@ const fetchConnectionFromApi = async () => {
       });
 
       setMessages(chat || []);
+      // Ensure we get the correct connection user
+      const otherUser = messages.find(
+        (msg) => msg?.senderId?._id !== userId
+      )?.senderId;
+
+      if (otherUser) {
+        setConnectionUser(otherUser); // ✅ Set as an object instead of just a name
+      } else {
+        fetchConnectionFromApi();
+      }
     } catch (error) {
       console.error("Failed to fetch chat:", error);
     }
@@ -175,8 +184,8 @@ const fetchConnectionFromApi = async () => {
   };
 
   // ❌ Show animated message if user is NOT premium or still loading
-  if (isPremium === null || isPremium === false){
-    return <NotPremium/>
+  if (isPremium === null || isPremium === false) {
+    return <NotPremium />;
   }
   return (
     <div className="flex flex-col h-screen bg-gradient-to-br from-gray-800 via-gray-900 to-gray-950  text-white overflow-hidden">
@@ -188,7 +197,11 @@ const fetchConnectionFromApi = async () => {
           <ArrowLeft size={24} color="white" />
         </button>
         <h2 className="font-semibold text-lg flex-1 text-center">
-        {loading ? "Loading..." : connectionUser?.name || "User Name"}
+          {loading
+            ? "Loading..."
+            : connectionUser
+            ? connectionUser.name
+            : "Unknown"}
           {onlineUsers?.includes(connectionUserId) ? (
             <span className="text-green-500 ml-2">● Online</span>
           ) : (
@@ -226,38 +239,40 @@ const fetchConnectionFromApi = async () => {
       </main>
 
       <footer className="fixed bottom-0 left-0 right-0 bg-gradient-to-br from-gray-800 via-gray-900 to-black border-t border-gray-700 shadow-2xl z-50">
-  <div className="max-w-4xl mx-auto px-3 py-2 flex items-center space-x-2">
-    {/* Emoji Picker Trigger */}
-    <div className="relative">
-      <button 
-        onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-        className="group relative p-2 rounded-full hover:bg-gray-700 transition-all duration-300 ease-in-out transform hover:scale-110 active:scale-95"
-      >
-        <span className="text-2xl sm:text-3xl transition-transform group-hover:rotate-12">
-          😊
-        </span>
-        {/* Subtle pulse effect */}
-        <span className="absolute inset-0 bg-blue-500 rounded-full animate-ping opacity-30 group-hover:opacity-50"></span>
-      </button>
-    </div>
+        <div className="max-w-4xl mx-auto px-3 py-2 flex items-center space-x-2">
+          {/* Emoji Picker Trigger */}
+          <div className="relative">
+            <button
+              onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+              className="group relative p-2 rounded-full hover:bg-gray-700 transition-all duration-300 ease-in-out transform hover:scale-110 active:scale-95"
+            >
+              <span className="text-2xl sm:text-3xl transition-transform group-hover:rotate-12">
+                😊
+              </span>
+              {/* Subtle pulse effect */}
+              <span className="absolute inset-0 bg-blue-500 rounded-full animate-ping opacity-30 group-hover:opacity-50"></span>
+            </button>
+          </div>
 
-{/* Emoji Picker */}
-{showEmojiPicker && (
-  <div className="absolute bottom-full mb-2 right-0 sm:right-10 w-full max-w-xs
+          {/* Emoji Picker */}
+          {showEmojiPicker && (
+            <div
+              className="absolute bottom-full mb-2 right-0 sm:right-10 w-full max-w-xs
     transform -translate-x-2 sm:translate-x-0
-    scale-90 sm:scale-100 origin-bottom-right">
-    <EmojiPicker onEmojiClick={handleEmojiClick} />
-  </div>
-)}
+    scale-90 sm:scale-100 origin-bottom-right"
+            >
+              <EmojiPicker onEmojiClick={handleEmojiClick} />
+            </div>
+          )}
 
-    {/* Message Input */}
-    <div className="flex-1 relative">
-      <input
-        value={newMessage}
-        onChange={(e) => setNewMessage(e.target.value)}
-        onKeyDown={handleKeyPress}
-        type="text"
-        className="w-full pl-4 pr-10 py-2 text-sm sm:text-base 
+          {/* Message Input */}
+          <div className="flex-1 relative">
+            <input
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              onKeyDown={handleKeyPress}
+              type="text"
+              className="w-full pl-4 pr-10 py-2 text-sm sm:text-base 
         bg-gray-700/50 backdrop-blur-sm 
         border border-gray-600/30 
         rounded-full 
@@ -267,16 +282,15 @@ const fetchConnectionFromApi = async () => {
         focus:ring-2 focus:ring-blue-500/50 
         transition-all duration-300 
         ease-in-out"
-        placeholder="Type a message..."
-      />
-   
-    </div>
+              placeholder="Type a message..."
+            />
+          </div>
 
-    {/* Send Button */}
-    <button
-      onClick={sendMessage}
-      disabled={!newMessage.trim()}
-      className="
+          {/* Send Button */}
+          <button
+            onClick={sendMessage}
+            disabled={!newMessage.trim()}
+            className="
         bg-gradient-to-r from-blue-600 to-purple-600 
         text-white 
         p-2 
@@ -293,11 +307,11 @@ const fetchConnectionFromApi = async () => {
         shadow-lg
         hover:shadow-xl
       "
-    >
-      <Send size={20} sm:size={24} />
-    </button>
-  </div>
-</footer>
+          >
+            <Send size={20} sm:size={24} />
+          </button>
+        </div>
+      </footer>
     </div>
   );
 };
