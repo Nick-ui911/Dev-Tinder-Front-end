@@ -27,8 +27,10 @@ const Chat = () => {
 
   const user = useSelector((store) => store.user);
   const connections = useSelector((state) => state.connection.connections);
-
+  console.log(connectionUserId)
+console.log(user)
   const userId = user?._id;
+  console.log(userId)
   const messagesEndRef = useRef(null);
 
   // To check MemberShip Type
