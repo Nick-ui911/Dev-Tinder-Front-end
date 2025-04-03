@@ -31,67 +31,31 @@ const Chat = () => {
   const userId = user?._id;
   const messagesEndRef = useRef(null);
 
-  // To check MemberShip Type
   const fetchProfile = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/profile/view`, {
         withCredentials: true,
       });
-      // console.log(res.data.isPremium)
-
+      console.log("Profile Data:", res.data);
       dispatch(addUser(res.data));
-      setIsPremium(res.data.isPremium); // Store isPremium status
+      setIsPremium(res.data.isPremium);
     } catch (error) {
-      if (error.response?.status === 401) {
-        navigate("/login");
-      } else {
-        console.error("Error fetching profile", error);
-      }
+      console.error("Error fetching profile", error);
+      if (error.response?.status === 401) navigate("/login");
     }
   };
 
   useEffect(() => {
     fetchProfile();
   }, []);
-  //  this is because in reload the user is disappear whom we are chatting with;
-
-  // useEffect(() => {
-  //   const foundConnection = connections.find(
-  //     (connection) => connection._id === connectionUserId
-  //   );
-  //   if (foundConnection) {
-  //     setConnectionUser(foundConnection);
-  //     setLoading(false); // Data is now ready
-  //   } else {
-  //     fetchConnectionFromApi();
-  //   }
-  // }, [connections, connectionUserId]);
-
-  // const fetchConnectionFromApi = async () => {
-  //   try {
-  //     const res = await axios.get(`${BASE_URL}/user/connections`, {
-  //       withCredentials: true,
-  //     });
-
-  //     const foundUser = res.data.data.find(
-  //       (user) => user._id === connectionUserId
-  //     );
-
-  //     setConnectionUser(foundUser || null);
-  //     dispatch(addConnections(res.data.data)); // Store all connections in Redux
-  //     setLoading(false);
-  //   } catch (error) {
-  //     console.error("Failed to fetch connection:", error);
-  //     setLoading(false);
-  //   }
-  // };
 
   const fetchChat = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/chat/${connectionUserId}`, {
         withCredentials: true,
       });
-      console.log(res.data)
+      console.log("Chat API Response:", res.data);
+
       const chat = res.data?.messages.map((msg) => {
         const isCurrentUser = msg?.senderId?._id === userId;
         return {
@@ -103,36 +67,43 @@ const Chat = () => {
         };
       });
 
+      console.log("Processed Chat Messages:", chat);
       setMessages(chat || []);
-     // ✅ Fix: Ensure connectionUser is set correctly
-     if (res.data?.participants) {
-      const otherUser = res.data.participants.find((p) => p._id !== userId);
-      if (otherUser) {
-        setConnectionUser(otherUser);  // ✅ Set correct connection user
+
+      if (res.data?.participants) {
+        const otherUser = res.data.participants.find((p) => p._id !== userId);
+        console.log("Chat Participant Found:", otherUser);
+        if (otherUser) setConnectionUser(otherUser);
       }
-      console.log(otherUser.name)
-    }
-  
     } catch (error) {
       console.error("Failed to fetch chat:", error);
     }
   };
 
   useEffect(() => {
-    if (userId) {
-      fetchChat();
-    }
+    if (userId) fetchChat();
   }, [userId]);
 
   useEffect(() => {
     if (!userId || !connectionUser) return;
 
+    console.log("Setting up WebSocket connection...");
     socket = createSocketConnection();
+    console.log("Emitting userOnline event", userId);
     socket.emit("userOnline", userId);
-    socket.on("updateOnlineUsers", (onlineUsers) => {
-      setOnlineUsers(onlineUsers);
+
+    socket.on("updateOnlineUsers", (users) => {
+      console.log("Online Users Update:", users);
+      setOnlineUsers(users);
     });
 
+    console.log("Joining Chat:", {
+      name: user.name,
+      userId,
+      connectionUserId,
+      time: new Date().toLocaleTimeString(),
+      date: new Date().toLocaleDateString(),
+    });
     socket.emit("joinChat", {
       name: user.name,
       userId,
@@ -141,14 +112,13 @@ const Chat = () => {
       date: new Date().toLocaleDateString(),
     });
 
-    socket.on("messageReceived", ({ name, text, time, date, senderId }) => {
-      setMessages((messages) => [
-        ...messages,
-        { name, text, time, date, senderId },
-      ]);
+    socket.on("messageReceived", (message) => {
+      console.log("Received Message:", message);
+      setMessages((messages) => [...messages, message]);
     });
 
     return () => {
+      console.log("Disconnecting WebSocket...");
       socket.emit("userOffline", userId);
       socket.disconnect();
     };
@@ -160,6 +130,12 @@ const Chat = () => {
 
   const sendMessage = () => {
     if (!newMessage) return;
+    console.log("Sending Message:", {
+      name: user.name,
+      userId,
+      connectionUserId,
+      text: newMessage,
+    });
 
     socket.emit("sendMessage", {
       name: user.name,
