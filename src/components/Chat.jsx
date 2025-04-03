@@ -53,38 +53,6 @@ const Chat = () => {
   useEffect(() => {
     fetchProfile();
   }, []);
-  //  this is because in reload the user is disappear whom we are chatting with;
-
-  // useEffect(() => {
-  //   const foundConnection = connections.find(
-  //     (connection) => connection._id === connectionUserId
-  //   );
-  //   if (foundConnection) {
-  //     setConnectionUser(foundConnection);
-  //     setLoading(false); // Data is now ready
-  //   } else {
-  //     fetchConnectionFromApi();
-  //   }
-  // }, [connections, connectionUserId]);
-
-  // const fetchConnectionFromApi = async () => {
-  //   try {
-  //     const res = await axios.get(`${BASE_URL}/user/connections`, {
-  //       withCredentials: true,
-  //     });
-
-  //     const foundUser = res.data.data.find(
-  //       (user) => user._id === connectionUserId
-  //     );
-
-  //     setConnectionUser(foundUser || null);
-  //     dispatch(addConnections(res.data.data)); // Store all connections in Redux
-  //     setLoading(false);
-  //   } catch (error) {
-  //     console.error("Failed to fetch connection:", error);
-  //     setLoading(false);
-  //   }
-  // };
 
   const fetchChat = async () => {
     try {
