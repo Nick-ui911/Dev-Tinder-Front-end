@@ -109,15 +109,19 @@ const Chat = () => {
       if (otherUser) {
         setConnectionUser(otherUser);  // ✅ Set correct connection user
       }
+      console.log(otherUser.name)
     }
+  
     } catch (error) {
       console.error("Failed to fetch chat:", error);
     }
   };
 
   useEffect(() => {
-    fetchChat();
-  }, []);
+    if (userId) {
+      fetchChat();
+    }
+  }, [userId]);
 
   useEffect(() => {
     if (!userId || !connectionUser) return;
