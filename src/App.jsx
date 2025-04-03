@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useEffect } from "react";
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import Store from "./utils/Store";
 import OfflineScreen from "./components/offlineScreen";
@@ -7,6 +7,7 @@ import Home from "./components/Home";
 import Loader from "./components/Loader";
 import { ToastContainer } from "react-toastify";
 import ForeGroundNotificationHandler from "./components/ForeGroundNotificationHandler";
+import NotificationClickHandler from "./components/NotificationClickHandler";
 
 // Lazy load components
 const Login = lazy(() => import("./components/Login"));
@@ -32,20 +33,12 @@ const Premium = lazy(() => import("./components/Premium"));
 const Chat = lazy(() => import("./components/Chat"));
 
 const App = () => {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    navigator.serviceWorker.addEventListener("message", (event) => {
-      if (event.data.type === "OPEN_CHAT" && event.data.path) {
-        navigate(event.data.path); // Navigate to chat page
-      }
-    });
-  }, [navigate]);
   return (
     <Provider store={Store}>
       <BrowserRouter basename="/">
         <ToastContainer /> {/* Global toast container */}
         <ForeGroundNotificationHandler />{" "}
+        <NotificationClickHandler/>
         {/* ✅ Handles notifications correctly */}
         <OfflineScreen />
         <Suspense fallback={<Loader />}>
