@@ -91,6 +91,7 @@ const Chat = () => {
       const res = await axios.get(`${BASE_URL}/chat/${connectionUserId}`, {
         withCredentials: true,
       });
+      console.log(res.data)
       const chat = res.data?.messages.map((msg) => {
         const isCurrentUser = msg?.senderId?._id === userId;
         return {
