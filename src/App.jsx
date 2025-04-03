@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { Provider } from "react-redux";
 import Store from "./utils/Store";
 import OfflineScreen from "./components/offlineScreen";
@@ -32,6 +32,15 @@ const Premium = lazy(() => import("./components/Premium"));
 const Chat = lazy(() => import("./components/Chat"));
 
 const App = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    navigator.serviceWorker.addEventListener("message", (event) => {
+      if (event.data.type === "OPEN_CHAT" && event.data.path) {
+        navigate(event.data.path); // Navigate to chat page
+      }
+    });
+  }, [navigate]);
   return (
     <Provider store={Store}>
       <BrowserRouter basename="/">

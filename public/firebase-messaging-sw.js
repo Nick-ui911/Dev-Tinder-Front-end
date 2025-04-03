@@ -35,23 +35,24 @@ messaging.onBackgroundMessage((payload) => {
     }
   });
 });
-
-// ✅ Handle notification clicks
 self.addEventListener("notificationclick", (event) => {
   event.notification.close(); // Close notification when clicked
 
   event.waitUntil(
-    clients
-      .matchAll({ type: "window", includeUncontrolled: true })
-      .then((clientList) => {
-        const targetUrl = event.notification.data?.url || "https://devworld.in/";
-        const matchingClient = clientList.find((client) => client.url === targetUrl);
+    clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
+      const targetUrl = event.notification.data?.url || "https://devworld.in/";
+      const chatPath = new URL(targetUrl).pathname; // Extract /chat/:id
+      
+      const matchingClient = clientList.find((client) => client.url === "https://devworld.in/");
 
-        if (matchingClient) {
-          return matchingClient.focus(); // Focus existing tab if already open
-        } else {
-          return clients.openWindow(targetUrl); // Otherwise, open a new window
-        }
-      })
+      if (matchingClient) {
+        // If the app is already open, navigate to chat
+        matchingClient.focus();
+        matchingClient.postMessage({ type: "OPEN_CHAT", path: chatPath });
+      } else {
+        // Open the app first, then navigate to chat
+        return clients.openWindow("https://devworld.in/");
+      }
+    })
   );
 });
