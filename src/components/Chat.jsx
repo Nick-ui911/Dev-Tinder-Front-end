@@ -9,7 +9,6 @@ import { Send, ArrowLeft } from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
 import NotPremium from "./NotPremium";
 import { addUser } from "../utils/UserSlice";
-import { Send as SendIcon, Mic } from "lucide-react";
 
 let socket;
 
@@ -20,7 +19,7 @@ const Chat = () => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [isPremium, setIsPremium] = useState(null); // New state to track premium status
-  const [loading, setLoading] = useState(true);
+
 
   const { connectionUserId } = useParams();
   const navigate = useNavigate();
@@ -56,43 +55,42 @@ const Chat = () => {
   }, []);
   //  this is because in reload the user is disappear whom we are chatting with;
 
-  useEffect(() => {
-    const foundConnection = connections.find(
-      (connection) => connection._id === connectionUserId
-    );
-    if (foundConnection) {
-      setConnectionUser(foundConnection);
-      setLoading(false); // Data is now ready
-    } else {
-      fetchConnectionFromApi();
-    }
-  }, [connections, connectionUserId]);
+  // useEffect(() => {
+  //   const foundConnection = connections.find(
+  //     (connection) => connection._id === connectionUserId
+  //   );
+  //   if (foundConnection) {
+  //     setConnectionUser(foundConnection);
+  //     setLoading(false); // Data is now ready
+  //   } else {
+  //     fetchConnectionFromApi();
+  //   }
+  // }, [connections, connectionUserId]);
 
-  const fetchConnectionFromApi = async () => {
-    try {
-      const res = await axios.get(`${BASE_URL}/user/connections`, {
-        withCredentials: true,
-      });
+  // const fetchConnectionFromApi = async () => {
+  //   try {
+  //     const res = await axios.get(`${BASE_URL}/user/connections`, {
+  //       withCredentials: true,
+  //     });
 
-      const foundUser = res.data.data.find(
-        (user) => user._id === connectionUserId
-      );
+  //     const foundUser = res.data.data.find(
+  //       (user) => user._id === connectionUserId
+  //     );
 
-      setConnectionUser(foundUser || null);
-      dispatch(addConnections(res.data.data)); // Store all connections in Redux
-      setLoading(false);
-    } catch (error) {
-      console.error("Failed to fetch connection:", error);
-      setLoading(false);
-    }
-  };
+  //     setConnectionUser(foundUser || null);
+  //     dispatch(addConnections(res.data.data)); // Store all connections in Redux
+  //     setLoading(false);
+  //   } catch (error) {
+  //     console.error("Failed to fetch connection:", error);
+  //     setLoading(false);
+  //   }
+  // };
 
   const fetchChat = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/chat/${connectionUserId}`, {
         withCredentials: true,
       });
-
       const chat = res.data?.messages.map((msg) => {
         const isCurrentUser = msg?.senderId?._id === userId;
         return {
@@ -105,16 +103,13 @@ const Chat = () => {
       });
 
       setMessages(chat || []);
-      // Ensure we get the correct connection user
-      const otherUser = messages.find(
-        (msg) => msg?.senderId?._id !== userId
-      )?.senderId;
-
+     // ✅ Fix: Ensure connectionUser is set correctly
+     if (res.data?.participants) {
+      const otherUser = res.data.participants.find((p) => p._id !== userId);
       if (otherUser) {
-        setConnectionUser(otherUser); // ✅ Set as an object instead of just a name
-      } else {
-        fetchConnectionFromApi();
+        setConnectionUser(otherUser);  // ✅ Set correct connection user
       }
+    }
     } catch (error) {
       console.error("Failed to fetch chat:", error);
     }
@@ -197,11 +192,7 @@ const Chat = () => {
           <ArrowLeft size={24} color="white" />
         </button>
         <h2 className="font-semibold text-lg flex-1 text-center">
-          {loading
-            ? "Loading..."
-            : connectionUser
-            ? connectionUser.name
-            : "Unknown"}
+        {connectionUser ? connectionUser.name : "Loading..."} 
           {onlineUsers?.includes(connectionUserId) ? (
             <span className="text-green-500 ml-2">● Online</span>
           ) : (
