@@ -20,17 +20,15 @@ const Chat = () => {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [isPremium, setIsPremium] = useState(null); // New state to track premium status
 
-
   const { connectionUserId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const user = useSelector((store) => store.user);
   const connections = useSelector((state) => state.connection.connections);
-  console.log(connectionUserId)
-console.log(user)
+  console.log(connectionUserId);
   const userId = user?._id;
-  console.log(userId)
+  console.log(userId);
   const messagesEndRef = useRef(null);
 
   // To check MemberShip Type
@@ -93,7 +91,6 @@ console.log(user)
       const res = await axios.get(`${BASE_URL}/chat/${connectionUserId}`, {
         withCredentials: true,
       });
-      console.log(res.data)
       const chat = res.data?.messages.map((msg) => {
         const isCurrentUser = msg?.senderId?._id === userId;
         return {
@@ -106,15 +103,14 @@ console.log(user)
       });
 
       setMessages(chat || []);
-     // ✅ Fix: Ensure connectionUser is set correctly
-     if (res.data?.participants) {
-      const otherUser = res.data.participants.find((p) => p._id !== userId);
-      if (otherUser) {
-        setConnectionUser(otherUser);  // ✅ Set correct connection user
+      // ✅ Fix: Ensure connectionUser is set correctly
+      if (res.data?.participants) {
+        const otherUser = res.data.participants.find((p) => p._id !== userId);
+        if (otherUser) {
+          setConnectionUser(otherUser); // ✅ Set correct connection user
+        }
+        console.log(otherUser.name);
       }
-      console.log(otherUser.name)
-    }
-  
     } catch (error) {
       console.error("Failed to fetch chat:", error);
     }
@@ -199,7 +195,7 @@ console.log(user)
           <ArrowLeft size={24} color="white" />
         </button>
         <h2 className="font-semibold text-lg flex-1 text-center">
-        {connectionUser ? connectionUser.name : "Loading..."} 
+          {connectionUser ? connectionUser.name : "Loading..."}
           {onlineUsers?.includes(connectionUserId) ? (
             <span className="text-green-500 ml-2">● Online</span>
           ) : (
