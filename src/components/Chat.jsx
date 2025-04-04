@@ -9,6 +9,7 @@ import { Send, ArrowLeft } from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
 import NotPremium from "./NotPremium";
 import { addUser } from "../utils/UserSlice";
+import Loader from "./Loader";
 
 let socket;
 
@@ -19,6 +20,7 @@ const Chat = () => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [isPremium, setIsPremium] = useState(null); // New state to track premium status
+  const [loading,setLoading] = useState(true);
 
   const { connectionUserId } = useParams();
   const navigate = useNavigate();
@@ -47,6 +49,8 @@ const Chat = () => {
       } else {
         console.error("Error fetching profile", error);
       }
+    }finally {
+      setLoading(false); // Stop loading after fetching
     }
   };
 
@@ -148,6 +152,8 @@ const Chat = () => {
   const handleEmojiClick = (emoji) => {
     setNewMessage((prevMessage) => prevMessage + emoji.emoji);
   };
+
+  if (loading) return <Loader/>;
 
   // ❌ Show animated message if user is NOT premium or still loading
   if (isPremium === null || isPremium === false) {
