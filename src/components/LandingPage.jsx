@@ -33,7 +33,7 @@ const LandingPage = () => {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="relative z-10 text-white flex flex-col items-center px-4 sm:px-6 max-w-3xl"
+          className="relative  text-white flex flex-col items-center px-4 sm:px-6 max-w-3xl"
         >
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 leading-tight">
             Unleash Your <span className="text-red-500">Development</span>{" "}
@@ -87,7 +87,7 @@ const LandingPage = () => {
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="absolute bottom-10 flex flex-col items-center z-10"
+          className="absolute bottom-10 flex flex-col items-center "
         >
           <div className="animate-bounce w-10 h-10 border-2 border-white/30 rounded-full flex items-center justify-center">
             <svg
