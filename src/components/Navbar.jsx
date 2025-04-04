@@ -39,11 +39,12 @@ const Navbar = () => {
     <div className="fixed top-0 w-full h-20 flex items-center justify-between px-4 md:px-6 bg-gradient-to-r from-gray-900 via-black to-gray-900 shadow-lg z-10">
       {/* Logo */}
       <Link
-        to="/"
-        className="text-white text-2xl md:text-3xl font-extrabold tracking-wide hover:scale-105 transition"
-      >
-        DevWorld
-      </Link>
+  to="/"
+  className="text-2xl md:text-3xl font-extrabold tracking-wide hover:scale-105 transition 
+  bg-gradient-to-r from-blue-400 via-purple-500 to-red-500 bg-clip-text text-transparent"
+>
+  DevWorld
+</Link>
 
       {/* Navigation Icons */}
       <div className="hidden md:flex items-center gap-6 text-white text-xl md:text-2xl">

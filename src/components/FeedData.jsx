@@ -5,6 +5,7 @@ import Loader from "./Loader";
 import { useDispatch, useSelector } from "react-redux";
 import { addFeed } from "../utils/FeedSlice";
 import { BASE_URL } from "../utils/constants";
+import { useNavigate } from "react-router-dom";
 
 function FeedData() {
   const dispatch = useDispatch();
@@ -12,6 +13,7 @@ function FeedData() {
   const user = useSelector((store) => store.user);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchFeedData = async () => {
@@ -22,7 +24,11 @@ function FeedData() {
         });
         dispatch(addFeed(response.data.data));
       } catch (error) {
-        console.error("Error fetching feeds:", error);
+        if (error.response?.status === 401) {
+          navigate("/login");
+        } else {
+          console.error("Error fetching feed", error);
+        }
       } finally {
         setIsLoading(false);
       }

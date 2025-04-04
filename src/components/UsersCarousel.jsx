@@ -62,7 +62,7 @@ const UsersCarousel = () => {
   );
 
   return (
-    <div className="relative w-full bg-gradient-to-br from-gray-900 via-black to-gray-900 opacity-90 z-0 py-16 px-4 overflow-hidden">
+    <div className="relative w-full  opacity-90 z-0 py-16 px-4 overflow-hidden">
       <div className="max-w-6xl mx-auto relative">
         <h2 className="text-center text-white text-3xl md:text-4xl font-bold mb-12 tracking-tight">
           DevWorld by the Numbers
