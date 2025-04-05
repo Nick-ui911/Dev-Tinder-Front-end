@@ -98,14 +98,12 @@ const Chat = () => {
     formData.append("file", uploadedFile);
     formData.append("upload_preset", "devworldimage-cloud");
 
-    const fileType = uploadedFile.type; // example: "image/jpeg" or "application/pdf"
-    const uploadUrl = fileType.startsWith("image/")
-      ? "https://api.cloudinary.com/v1_1/dj7i4ts8b/image/upload"
-      : "https://api.cloudinary.com/v1_1/dj7i4ts8b/raw/upload";
-
     setMediaLoading(true);
     try {
-      const response = await axios.post(uploadUrl, formData);
+      const response = await axios.post(
+        "https://api.cloudinary.com/v1_1/dj7i4ts8b/auto/upload",
+        formData
+      );
       setMedia(response.data.secure_url);
       setSelectedImage(response.data.secure_url);
     } catch (err) {
@@ -174,7 +172,7 @@ const Chat = () => {
     });
     setNewMessage("");
     setMedia(null);
-    setSelectedImage(null);
+    setSelectedImage(null)
   };
 
   const handleKeyPress = (e) => {
