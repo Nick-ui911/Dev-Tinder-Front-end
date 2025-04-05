@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { createSocketConnection } from "../utils/socket";
-import { addConnections } from "../utils/ConnectionSlice";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { Send, ArrowLeft } from "lucide-react";
@@ -10,6 +9,7 @@ import EmojiPicker from "emoji-picker-react";
 import NotPremium from "./NotPremium";
 import { addUser } from "../utils/UserSlice";
 import Loader from "./Loader";
+import { FaPaperclip } from "react-icons/fa6";
 
 let socket;
 
@@ -20,17 +20,18 @@ const Chat = () => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [isPremium, setIsPremium] = useState(null); // New state to track premium status
-  const [loading,setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [mediaLoading, setMediaLoading] = useState(false);
+  const [media, setMedia] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [error, setError] = useState(null);
 
   const { connectionUserId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const user = useSelector((store) => store.user);
-  const connections = useSelector((state) => state.connection.connections);
-  console.log(connectionUserId);
   const userId = user?._id;
-  console.log(userId);
   const messagesEndRef = useRef(null);
 
   // To check MemberShip Type
@@ -49,7 +50,7 @@ const Chat = () => {
       } else {
         console.error("Error fetching profile", error);
       }
-    }finally {
+    } finally {
       setLoading(false); // Stop loading after fetching
     }
   };
@@ -67,6 +68,7 @@ const Chat = () => {
         const isCurrentUser = msg?.senderId?._id === userId;
         return {
           text: msg?.text,
+          media: msg?.media, // ✅ Add this line to map media properly
           name: isCurrentUser ? "You" : msg?.senderId?.name || "Unknown User",
           date: msg?.date,
           time: msg?.time,
@@ -81,10 +83,35 @@ const Chat = () => {
         if (otherUser) {
           setConnectionUser(otherUser); // ✅ Set correct connection user
         }
-        console.log(otherUser.name);
       }
     } catch (error) {
       console.error("Failed to fetch chat:", error);
+    }
+  };
+
+  // Handle File Upload to Cloudinary
+  const handleFileUpload = async (e) => {
+    const uploadedFile = e.target.files[0];
+    if (!uploadedFile) return;
+
+    const formData = new FormData();
+    formData.append("file", uploadedFile);
+    formData.append("upload_preset", "devworldimage-cloud");
+
+    setMediaLoading(true);
+    try {
+      const response = await axios.post(
+        "https://api.cloudinary.com/v1_1/dj7i4ts8b/image/upload",
+        formData
+      );
+      setMedia(response.data.secure_url);
+      setSelectedImage(response.data.secure_url);
+    } catch (err) {
+      console.error("Error uploading file:", err);
+      setError(error + "Failed to upload image");
+    } finally {
+      setMediaLoading(false);
+      e.target.value = null; // 🔥 RESET the file input after upload , solve reselecting same image problem
     }
   };
 
@@ -111,12 +138,15 @@ const Chat = () => {
       date: new Date().toLocaleDateString(),
     });
 
-    socket.on("messageReceived", ({ name, text, time, date, senderId }) => {
-      setMessages((messages) => [
-        ...messages,
-        { name, text, time, date, senderId },
-      ]);
-    });
+    socket.on(
+      "messageReceived",
+      ({ name, text, time, date, media, senderId }) => {
+        setMessages((messages) => [
+          ...messages,
+          { name, text, time, date, media, senderId },
+        ]);
+      }
+    );
 
     return () => {
       socket.emit("userOffline", userId);
@@ -126,10 +156,10 @@ const Chat = () => {
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, media]);
 
   const sendMessage = () => {
-    if (!newMessage) return;
+    if (!newMessage.trim() && !media) return; // Allow if any one exists
 
     socket.emit("sendMessage", {
       name: user.name,
@@ -138,9 +168,10 @@ const Chat = () => {
       text: newMessage,
       time: new Date().toLocaleTimeString(),
       date: new Date().toLocaleDateString(),
+      media,
     });
-
     setNewMessage("");
+    setMedia(null);
   };
 
   const handleKeyPress = (e) => {
@@ -153,7 +184,7 @@ const Chat = () => {
     setNewMessage((prevMessage) => prevMessage + emoji.emoji);
   };
 
-  if (loading) return <Loader/>;
+  if (loading) return <Loader />;
 
   // ❌ Show animated message if user is NOT premium or still loading
   if (isPremium === null || isPremium === false) {
@@ -178,7 +209,30 @@ const Chat = () => {
         </h2>
       </header>
 
-      <main className="flex-1 overflow-y-auto p-4 space-y-4">
+      <main
+        className={`flex-1 overflow-y-auto p-4 space-y-4 ${
+          media ? "pb-28" : "pb-4"
+        }`}
+      >
+        {selectedImage && (
+          <div
+            className="fixed inset-0 bg-gray-700 bg-opacity-80 flex items-center justify-center z-50"
+            onClick={() => setSelectedImage(null)}
+          >
+            <button
+              className="absolute top-4 right-4 text-white text-3xl font-bold"
+              onClick={() => setSelectedImage(null)} // Close on cross click
+            >
+              &times;
+            </button>
+            <img
+              src={selectedImage}
+              alt="Full view"
+              className="max-w-full max-h-full p-4 rounded-lg"
+            />
+          </div>
+        )}
+
         {messages.map((msg, index) => (
           <div
             key={index}
@@ -196,7 +250,16 @@ const Chat = () => {
               <div className="text-xs opacity-50 mb-1">
                 {msg.senderId === userId ? "You" : msg.name}
               </div>
-              <div>{msg.text}</div>
+              {/* Check if message has media (image) */}
+              {msg.media && (
+                <img
+                  src={msg.media}
+                  alt="sent"
+                  className="w-48 h-auto object-cover rounded-lg mb-2"
+                  onClick={() => setSelectedImage(msg.media)}
+                />
+              )}
+              {msg.text && <div>{msg.text}</div>}
               <div className="text-xs opacity-50 mt-1 text-right">
                 {msg.time} | {msg.date}
               </div>
@@ -207,58 +270,101 @@ const Chat = () => {
       </main>
 
       <footer className="fixed bottom-0 left-0 right-0 bg-gradient-to-br from-gray-800 via-gray-900 to-black border-t border-gray-700 shadow-2xl z-50">
-        <div className="max-w-4xl mx-auto px-3 py-2 flex items-center space-x-2">
+        {/* IMAGE PREVIEW BEFORE INPUT */}
+        {media && (
+          <div className="max-w-4xl mx-auto px-3 pt-2 flex items-center">
+            <div className="relative h-20 w-20">
+              {mediaLoading ? (
+                <div className="h-20 w-20 flex items-center justify-center bg-gray-700 rounded-lg">
+                  {/* 👇 Small inline loader */}
+                  <div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              ) : (
+                <>
+                  <img
+                    src={media}
+                    alt="preview"
+                    className="h-20 w-20 object-cover rounded-lg"
+                  />
+                  <button
+                    onClick={() => setMedia(null)}
+                    className="absolute top-0 right-0 bg-black bg-opacity-60 text-white rounded-full p-1 hover:bg-opacity-80"
+                  >
+                    ✕
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        )}
+
+        <div className="max-w-4xl mx-auto px-3 py-2 flex items-center space-x-4">
+          {" "}
+          {/* Increased space-x */}
+          {/* File Upload */}
+          <div className="relative">
+            <input
+              type="file"
+              id="fileInput"
+              onChange={handleFileUpload}
+              className="hidden"
+            />
+            <label
+              htmlFor="fileInput"
+              className="cursor-pointer p-2 rounded-full hover:bg-gray-700 transition-all duration-300 ease-in-out transform hover:scale-110 active:scale-95 flex items-center justify-center"
+            >
+              <FaPaperclip size={20} className="text-white" />
+            </label>
+          </div>
           {/* Emoji Picker Trigger */}
           <div className="relative">
             <button
               onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-              className="group relative p-2 rounded-full hover:bg-gray-700 transition-all duration-300 ease-in-out transform hover:scale-110 active:scale-95"
+              className="group relative p-2 rounded-full bg-transparent hover:bg-gray-200 
+             transition-transform duration-300 ease-out 
+             hover:scale-110 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
-              <span className="text-2xl sm:text-3xl transition-transform group-hover:rotate-12">
+              <span className="text-2xl sm:text-3xl transition-transform duration-300 group-hover:rotate-12">
                 😊
               </span>
-              {/* Subtle pulse effect */}
-              <span className="absolute inset-0 bg-blue-500 rounded-full animate-ping opacity-30 group-hover:opacity-50"></span>
             </button>
+
+            {/* Emoji Picker Dropdown */}
+            {showEmojiPicker && (
+              <div
+                className="absolute bottom-full mb-2 right-0 sm:right-10 w-full max-w-xs
+          transform -translate-x-2 sm:translate-x-0
+          scale-90 sm:scale-100 origin-bottom-right"
+              >
+                <EmojiPicker onEmojiClick={handleEmojiClick} />
+              </div>
+            )}
           </div>
-
-          {/* Emoji Picker */}
-          {showEmojiPicker && (
-            <div
-              className="absolute bottom-full mb-2 right-0 sm:right-10 w-full max-w-xs
-    transform -translate-x-2 sm:translate-x-0
-    scale-90 sm:scale-100 origin-bottom-right"
-            >
-              <EmojiPicker onEmojiClick={handleEmojiClick} />
-            </div>
-          )}
-
           {/* Message Input */}
           <div className="flex-1 relative">
             <input
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               onKeyDown={handleKeyPress}
-              onFocus={() => setShowEmojiPicker(false)} // Close emoji picker when input is focused
+              onFocus={() => setShowEmojiPicker(false)}
               type="text"
               className="w-full pl-4 pr-10 py-2 text-sm sm:text-base 
-        bg-gray-700/50 backdrop-blur-sm 
-        border border-gray-600/30 
-        rounded-full 
-        text-white 
-        placeholder-gray-400 
-        focus:outline-none 
-        focus:ring-2 focus:ring-blue-500/50 
-        transition-all duration-300 
-        ease-in-out"
+          bg-gray-700/50 backdrop-blur-sm 
+          border border-gray-600/30 
+          rounded-full 
+          text-white 
+          placeholder-gray-400 
+          focus:outline-none 
+          focus:ring-2 focus:ring-blue-500/50 
+          transition-all duration-300 
+          ease-in-out"
               placeholder="Type a message..."
             />
           </div>
-
           {/* Send Button */}
           <button
             onClick={sendMessage}
-            disabled={!newMessage.trim()}
+            disabled={!newMessage && !media}
             className="
         bg-gradient-to-r from-blue-600 to-purple-600 
         text-white 
@@ -277,7 +383,7 @@ const Chat = () => {
         hover:shadow-xl
       "
           >
-            <Send size={20} sm:size={24} />
+            <Send size={20} />
           </button>
         </div>
       </footer>
