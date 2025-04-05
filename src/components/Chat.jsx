@@ -172,6 +172,7 @@ const Chat = () => {
     });
     setNewMessage("");
     setMedia(null);
+    setSelectedImage(null)
   };
 
   const handleKeyPress = (e) => {
