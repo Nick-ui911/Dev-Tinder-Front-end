@@ -69,6 +69,7 @@ const Chat = () => {
         return {
           text: msg?.text,
           media: msg?.media, // ✅ Add this line to map media properly
+          mediaType: getMediaType(msg?.media), // Determine media type
           name: isCurrentUser ? "You" : msg?.senderId?.name || "Unknown User",
           date: msg?.date,
           time: msg?.time,
@@ -88,6 +89,11 @@ const Chat = () => {
       console.error("Failed to fetch chat:", error);
     }
   };
+    // Function to determine media type
+    const getMediaType = (url) => {
+      if (!url) return null;
+      return url.toLowerCase().endsWith('.pdf') ? 'pdf' : 'image';
+    };
 
   // Handle File Upload to Cloudinary
   const handleFileUpload = async (e) => {
@@ -104,8 +110,9 @@ const Chat = () => {
         "https://api.cloudinary.com/v1_1/dj7i4ts8b/auto/upload",
         formData
       );
-      setMedia(response.data.secure_url);
-      setSelectedImage(response.data.secure_url);
+      const fileUrl = response.data.secure_url;
+      setMedia(fileUrl);
+      setSelectedImage(fileUrl);
     } catch (err) {
       console.error("Error uploading file:", err);
       setError(error + "Failed to upload image");
