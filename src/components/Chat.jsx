@@ -272,7 +272,7 @@ const Chat = () => {
 
       <footer className="fixed bottom-0 left-0 right-0 bg-gradient-to-br from-gray-800 via-gray-900 to-black border-t border-gray-700 shadow-2xl z-50">
         {/* IMAGE PREVIEW BEFORE INPUT */}
-        {media && (
+        {(media || mediaLoading) && (
           <div className="max-w-4xl mx-auto px-3 pt-2 flex items-center">
             <div className="relative h-20 w-20">
               {mediaLoading ? (
@@ -307,6 +307,7 @@ const Chat = () => {
             <input
               type="file"
               id="fileInput"
+              accept="image/*,application/pdf"
               onChange={handleFileUpload}
               className="hidden"
             />
