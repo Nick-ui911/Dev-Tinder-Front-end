@@ -121,11 +121,21 @@ const Chat = () => {
     const uploadedFile = e.target.files[0];
     if (!uploadedFile) return;
 
+      // Check if file is a PDF
+  const extension = uploadedFile.name.split('.').pop().toLowerCase();
+  // because we are using cloudinary currently i am not trusted by cloudinary because i am using free tier
+  if (extension === "pdf") {
+    alert("PDF file are not supported");
+    e.target.value = null;
+    return; // Stop here if it's a PDF
+  }
+
     const formData = new FormData();
     formData.append("file", uploadedFile);
     formData.append("upload_preset", "devworldimage-cloud");
 
     setMediaLoading(true);
+    // to upload pdf file to cloudinary use "raw" in place of "auto" in the below line but you have to be trusted by cloudinary
     try {
       const response = await axios.post(
         "https://api.cloudinary.com/v1_1/dj7i4ts8b/auto/upload",
