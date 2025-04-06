@@ -3,18 +3,18 @@ import React, { useState } from "react";
 import { BASE_URL } from "../utils/constants";
 import { addUser } from "../utils/UserSlice";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { requestNotificationPermission } from "../utils/firebase";
 import { FcGoogle } from "react-icons/fc";
-
+import { signInWithPopup } from "firebase/auth";
+import { auth, provider } from "../utils/firebase";
 
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -22,23 +22,18 @@ const Register = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const validateEmail = (email) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  };
+ 
 
-  const validatePassword = (password) => {
-    return /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
-      password
-    );
-  };
-  
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const validatePassword = (password) =>
+    /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMessage("");
     setLoading(true);
 
-    if (!name || !email || !password || !age || !gender) {
+    if (!name || !email || !password || !gender) {
       setErrorMessage("All fields are required.");
       setLoading(false);
       return;
@@ -61,7 +56,7 @@ const Register = () => {
     try {
       const response = await axios.post(
         BASE_URL + "/signup",
-        { name, email, password, age, gender },
+        { name, email, password, gender },
         { withCredentials: true }
       );
       dispatch(addUser(response.data.data));
@@ -69,24 +64,42 @@ const Register = () => {
       handleFcmToken(response.data.data._id);
     } catch (error) {
       setErrorMessage(
-        error.response?.data?.message ||
-          "Something went wrong. Please try again."
+        error.response?.data?.message || "Something went wrong. Please try again."
       );
     } finally {
       setLoading(false);
     }
   };
+
   const handleFcmToken = async (userId) => {
     if (!userId) return;
     await requestNotificationPermission(userId);
   };
 
+  const handleGoogleSignUp = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      const { displayName, email, photoURL } = user;
+
+      const response = await axios.post(
+        BASE_URL + "/google-signup",
+        { name: displayName, email,PhotoUrl:photoURL},
+        { withCredentials: true }
+      );
+
+      dispatch(addUser(response.data.data));
+      navigate("/profile");
+      handleFcmToken(response.data.data._id);
+    } catch (error) {
+      console.log(error);
+      setErrorMessage("Google Sign Up failed. Please try again.");
+    }
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 animate-fade-in">
-      <div
-        className="bg-gray-400  bg-gradient-to-br from-gray-800 via-gray-900 to-gray-950 
-                 shadow-xl rounded-2xl p-8  w-96 animate-slide-in"
-      >
+      <div className="bg-gray-400 bg-gradient-to-br from-gray-800 via-gray-900 to-gray-950 shadow-xl rounded-2xl p-8 w-96 animate-slide-in">
         <h2 className="text-2xl font-bold text-white text-center mb-6">
           Create an Account
         </h2>
@@ -138,7 +151,7 @@ const Register = () => {
           />
           <select
             name="gender"
-            className="w-full p-3 rounded-lg bg-white/30  text-black placeholder-white focus:outline-none"
+            className="w-full p-3 rounded-lg bg-white/30 text-black placeholder-white focus:outline-none"
             onChange={(e) => setGender(e.target.value)}
             required
           >
@@ -158,7 +171,30 @@ const Register = () => {
             )}
           </button>
         </form>
+
+        <div className="flex items-center my-4">
+          <div className="flex-grow h-px bg-gray-600"></div>
+          <span className="mx-2 text-gray-400">or</span>
+          <div className="flex-grow h-px bg-gray-600"></div>
+        </div>
+
+        <button
+          onClick={handleGoogleSignUp}
+          className="w-full flex items-center justify-center p-3 bg-white rounded-lg text-black hover:bg-gray-200 transition"
+        >
+          <FcGoogle className="text-2xl mr-2" />
+          Sign up with Google
+        </button>
+        <div className="text-center mt-4">
+            <p className="text-sm text-white">
+              Don't have an account?{" "}
+              <Link to="/login" className="text-blue-600 hover:underline">
+                Login
+              </Link>
+            </p>
+          </div>
       </div>
+
     </div>
   );
 };
