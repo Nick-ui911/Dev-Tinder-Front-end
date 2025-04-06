@@ -89,12 +89,33 @@ const Chat = () => {
       console.error("Failed to fetch chat:", error);
     }
   };
-    // Function to determine media type
-    const getMediaType = (url) => {
-      if (!url) return null;
-      return url.toLowerCase().endsWith('.pdf') ? 'pdf' : 'image';
-    };
+  // Function to determine media type
+  const getMediaType = (url) => {
+    if (!url) return null;
+    const extension = url.split(".").pop().toLowerCase();
 
+    const imageExtensions = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"];
+    const videoExtensions = ["mp4", "avi", "mov", "wmv", "flv", "mkv", "webm"];
+    const rawExtensions = [
+      "pdf",
+      "doc",
+      "docx",
+      "txt",
+      "zip",
+      "rar",
+      "csv",
+      "xls",
+      "xlsx",
+      "ppt",
+      "pptx",
+    ];
+
+    if (imageExtensions.includes(extension)) return "image";
+    if (videoExtensions.includes(extension)) return "video";
+    if (rawExtensions.includes(extension)) return "raw";
+
+    return "unknown"; // fallback if extension not matched
+  };
   // Handle File Upload to Cloudinary
   const handleFileUpload = async (e) => {
     const uploadedFile = e.target.files[0];
@@ -147,10 +168,10 @@ const Chat = () => {
 
     socket.on(
       "messageReceived",
-      ({ name, text, time, date, media, senderId }) => {
+      ({ name, text, time, date, media, mediaType, senderId }) => {
         setMessages((messages) => [
           ...messages,
-          { name, text, time, date, media, senderId },
+          { name, text, time, date, media, mediaType, senderId },
         ]);
       }
     );
@@ -163,7 +184,7 @@ const Chat = () => {
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, media,newMessage]);
+  }, [messages, media, newMessage]);
 
   const sendMessage = () => {
     if (!newMessage.trim() && !media) return; // Allow if any one exists
@@ -176,10 +197,11 @@ const Chat = () => {
       time: new Date().toLocaleTimeString(),
       date: new Date().toLocaleDateString(),
       media,
+      mediaType: getMediaType(media),
     });
     setNewMessage("");
     setMedia(null);
-    setSelectedImage(null)
+    setSelectedImage(null);
   };
 
   const handleKeyPress = (e) => {
@@ -190,6 +212,10 @@ const Chat = () => {
 
   const handleEmojiClick = (emoji) => {
     setNewMessage((prevMessage) => prevMessage + emoji.emoji);
+  };
+  // Add this helper function to your component:
+  const getFileNameFromUrl = (url) => {
+    return url.split("/").pop();
   };
 
   if (loading) return <Loader />;
@@ -219,7 +245,7 @@ const Chat = () => {
 
       <main
         className={`flex-1 overflow-y-auto p-4 space-y-4 ${
-          media ? "pb-28" : "pb-4"
+          media ? "pb-38" : "pb-14"
         }`}
       >
         {selectedImage && (
@@ -248,32 +274,50 @@ const Chat = () => {
               msg.senderId === userId ? "justify-end" : "justify-start"
             }`}
           >
-            <div
-              className={`max-w-xs sm:max-w-md p-3 mb-10 rounded-lg ${
-                msg.senderId === userId
-                  ? "bg-gradient-to-r from-blue-500 to-purple-500 text-black rounded-br-none"
-                  : "bg-gradient-to-r from-gray-900 via-black to-gray-900 text-white rounded-bl-none"
-              }`}
-            >
-              <div className="text-xs opacity-50 mb-1">
-                {msg.senderId === userId ? "You" : msg.name}
-              </div>
-              {/* Check if message has media (image) */}
+            <div className="max-w-xs p-2 rounded-lg bg-gray-700">
+              {msg.text && <p className="mb-1">{msg.text}</p>}
+
               {msg.media && (
-                <img
-                  src={msg.media}
-                  alt="sent"
-                  className="w-48 h-auto object-cover rounded-lg mb-2"
-                  onClick={() => setSelectedImage(msg.media)}
-                />
+                <>
+                  {msg.mediaType === "image" && (
+                    <img
+                      src={msg.media}
+                      alt="Media"
+                      className="w-40 h-40 object-cover rounded cursor-pointer"
+                      onClick={() => setSelectedImage(msg.media)}
+                    />
+                  )}
+
+                  {msg.mediaType === "video" && (
+                    <video
+                      src={msg.media}
+                      controls
+                      className="w-40 h-40 rounded"
+                    />
+                  )}
+
+                  {msg.mediaType === "raw" && (
+                    <a
+                      href={msg.media}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-400 underline break-words"
+                    >
+                      📄 View File
+                    </a>
+                  )}
+
+                  {msg.mediaType === "unknown" && (
+                    <p className="text-red-400">Unsupported file type</p>
+                  )}
+                </>
               )}
-              {msg.text && <div>{msg.text}</div>}
-              <div className="text-xs opacity-50 mt-1 text-right">
-                {msg.time} | {msg.date}
-              </div>
+
+              <p className="text-xs text-gray-400 mt-1">{msg.time}</p>
             </div>
           </div>
         ))}
+
         <div ref={messagesEndRef} />
       </main>
 
