@@ -1,40 +1,46 @@
 import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { onMessage } from "firebase/messaging";
-import { messaging } from "../utils/firebase"; // Ensure correct Firebase import
+import { messaging } from "../utils/firebase";
+
 const ForeGroundNotificationHandler = () => {
-  const location = useLocation(); // ✅ Now inside <Router>, no error
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const unsubscribe = onMessage(messaging, (payload) => {
-      // console.log("📩 Foreground Notification Received:", payload);
-
       const title = payload?.notification?.title || payload?.data?.title;
       const body = payload?.notification?.body || payload?.data?.body;
+      const clickAction = payload?.data?.click_action; // ✅ Grab click_action URL
 
-      if (!title || !body) {
-        console.warn("⚠️ Missing title or body in payload:", payload);
+      if (!title || !body || !clickAction) {
+        console.warn("⚠️ Missing title, body, or click_action in payload:", payload);
         return;
       }
 
-      // ✅ Block notifications only in chat
       if (!location.pathname.startsWith("/chat/")) {
-        // Custom Toast
         toast.info(
-          <div className="bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white px-4 py-3 rounded-lg shadow-lg w-full sm:w-80 md:w-96">
+          <div
+            onClick={() => {
+              const path = new URL(clickAction).pathname; // ✅ Get only /chat/userId part
+              navigate(path);
+            }}
+            className="cursor-pointer bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white px-4 py-3 rounded-lg shadow-lg w-full sm:w-80 md:w-96"
+          >
             <p className="font-semibold text-base sm:text-lg">📩 {title}</p>
             <p className="text-xs sm:text-sm">{body}</p>
+            <p className="text-blue-400 underline text-xs mt-2">Click here</p>
           </div>,
           {
             position: "top-right",
             autoClose: 4000,
             hideProgressBar: false,
-            closeOnClick: true,
+            closeOnClick: false, // We handle click manually
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-            theme: "dark", // Ensures dark styling
+            theme: "dark",
           }
         );
       } else {
@@ -42,10 +48,10 @@ const ForeGroundNotificationHandler = () => {
       }
     });
 
-    return () => unsubscribe(); // Cleanup listener
-  }, [location]); // ✅ Runs when route changes
+    return () => unsubscribe();
+  }, [location, navigate]);
 
-  return null; // This component doesn't render anything
+  return null;
 };
 
 export default ForeGroundNotificationHandler;
