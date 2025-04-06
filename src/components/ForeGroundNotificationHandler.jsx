@@ -20,11 +20,13 @@ const ForeGroundNotificationHandler = () => {
       }
 
       if (!location.pathname.startsWith("/chat/")) {
-        toast.info(
+        const toastId =  toast.info(
           <div
             onClick={() => {
               const path = new URL(clickAction).pathname; // ✅ Get only /chat/userId part
               navigate(path);
+              toast.dismiss(toastId); // 👈 dismiss the toast on click
+
             }}
             className="cursor-pointer bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white px-4 py-3 rounded-lg shadow-lg w-full sm:w-80 md:w-96"
           >
