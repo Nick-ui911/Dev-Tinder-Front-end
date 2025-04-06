@@ -163,7 +163,7 @@ const Chat = () => {
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, media]);
+  }, [messages, media,newMessage]);
 
   const sendMessage = () => {
     if (!newMessage.trim() && !media) return; // Allow if any one exists
