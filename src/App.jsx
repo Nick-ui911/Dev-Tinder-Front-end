@@ -8,6 +8,7 @@ import Loader from "./components/Loader";
 import { ToastContainer } from "react-toastify";
 import ForeGroundNotificationHandler from "./components/ForeGroundNotificationHandler";
 import NotificationClickHandler from "./components/NotificationClickHandler";
+import CreatePassword from "./components/createPassword";
 
 // Lazy load components
 const Login = lazy(() => import("./components/Login"));
@@ -53,6 +54,7 @@ const App = () => {
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/privacy" element={<Privacy />} />
+              <Route path="/createpassword" element={<CreatePassword />} />
               <Route
                 path="/termandconditions"
                 element={<TermsAndConditions />}

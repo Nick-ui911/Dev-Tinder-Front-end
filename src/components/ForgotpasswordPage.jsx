@@ -3,6 +3,7 @@ import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { EyeIcon, EyeOffIcon, CheckCircleIcon, Loader2Icon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const ForgotPasswordPage = () => {
   const [oldPassword, setOldPassword] = useState("");
@@ -129,6 +130,14 @@ const ForgotPasswordPage = () => {
           {loading ? <Loader2Icon className="animate-spin" size={20} /> : null}
           {loading ? "Updating..." : "Update Password"}
         </button>
+        <div className="text-center mt-4">
+            <p className="text-sm text-white">
+              Don't have an account?{" "}
+              <Link to="/createpassword" className="text-blue-600 hover:underline">
+                Create Password
+              </Link>
+            </p>
+          </div>
       </form>
     </div>
   </div>
