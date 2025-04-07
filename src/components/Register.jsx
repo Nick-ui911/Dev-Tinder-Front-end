@@ -79,12 +79,13 @@ const Register = () => {
   const handleGoogleSignUp = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
+      const idToken = await result.user.getIdToken();
       const user = result.user;
       const { displayName, email, photoURL } = user;
 
       const response = await axios.post(
         BASE_URL + "/google-signup",
-        { name: displayName, email,PhotoUrl:photoURL},
+        { name: displayName, email,PhotoUrl:photoURL,idToken},
         { withCredentials: true }
       );
 
