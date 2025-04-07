@@ -75,6 +75,13 @@ const Profile = () => {
           />
         </div>
 
+        {!user?.gender && (
+            <div className="flex items-center gap-2 mt-4 bg-red-500 bg-opacity-20 text-red-400 px-4 py-2 rounded-lg shadow-sm">
+              <FaUserEdit className="text-black w-6 h-6" />
+              <span className="text-black" >Please complete your profile (Add Profile Picture and Gender)!</span>
+            </div>
+          )}
+
         {/* User Info */}
         <h2 className="mt-4 text-3xl font-extrabold flex items-center justify-center gap-2 text-white">
           {user?.name || "User Name"}
@@ -95,12 +102,7 @@ const Profile = () => {
 
         {/* Other Details */}
         <div className="mt-4 space-y-3 text-gray-300 text-lg">
-          {!user?.gender && (
-            <div className="flex items-center gap-2 mt-4 bg-red-500 bg-opacity-20 text-red-400 px-4 py-2 rounded-lg shadow-sm">
-              <FaUserEdit className="text-red-400 w-6 h-6" />
-              <span>Please complete your profile (Add Age and Gender)!</span>
-            </div>
-          )}
+
           <p>
             🚻 Gender:{" "}
             <span className="font-semibold">

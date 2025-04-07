@@ -99,7 +99,7 @@ const Register = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 animate-fade-in">
+    <div className="flex mt-12 items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 animate-fade-in">
       <div className="bg-gray-400 bg-gradient-to-br from-gray-800 via-gray-900 to-gray-950 shadow-xl rounded-2xl p-8 w-96 animate-slide-in">
         <h2 className="text-2xl font-bold text-white text-center mb-6">
           Create an Account
