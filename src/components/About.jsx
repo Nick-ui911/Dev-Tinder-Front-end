@@ -54,7 +54,7 @@ const About = () => {
 
       {/* Call to Action */}
       <section className="text-center py-12 bg-gray-800 text-white">
-        <h2 className="text-2xl font-semibold mb-4">Join DevTinder Today!</h2>
+        <h2 className="text-2xl font-semibold mb-4">Join DevWorld Today!</h2>
         <p className="max-w-xl mx-auto text-lg mb-6">
           Whether you're a beginner or an experienced developer, find your
           perfect match for projects, hackathons, and learning.
