@@ -1,6 +1,11 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+
+// it is for background notification click ?
+
+//Ans - Yes, this is for handling background notification clicks — specifically when a push notification is clicked and the app is already open (in a tab).
+
 const NotificationClickHandler = () => {
     const navigate = useNavigate();
 
