@@ -14,3 +14,6 @@ const UserSlice = createSlice({
 });
 export const { addUser, removeUser } = UserSlice.actions;
 export default UserSlice.reducer;
+
+// default import is access by import UserSlice from "./UserSlice"
+// named import is access by import { addUser, removeUser } from "./UserSlice"

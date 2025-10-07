@@ -149,7 +149,7 @@ const Chat = () => {
       setError(error + "Failed to upload image");
     } finally {
       setMediaLoading(false);
-      e.target.value = null; // 🔥 RESET the file input after upload , solve reselecting same image problem
+      e.target.value = null; // 🔥 RESET the file input after upload , solve reselecting same image problem (means it select first image again and again even if i selected different image in second time) 
     }
   };
 
@@ -223,17 +223,16 @@ const Chat = () => {
   const handleEmojiClick = (emoji) => {
     setNewMessage((prevMessage) => prevMessage + emoji.emoji);
   };
-  // Add this helper function to your component:
-  const getFileNameFromUrl = (url) => {
-    return url.split("/").pop();
-  };
 
   if (loading) return <Loader />;
 
+// i am commenting this because of inactive payment gateway
   // ❌ Show animated message if user is NOT premium or still loading
-  if (isPremium === null || isPremium === false) {
-    return <NotPremium />;
-  }
+  // if (isPremium === null || isPremium === false) {
+  //   return <NotPremium />;
+  // }
+
+  
   return (
     <div className="flex flex-col h-screen bg-gradient-to-br from-gray-800 via-gray-900 to-gray-950  text-white overflow-hidden">
       <header className="bg-gradient-to-r from-gray-900 via-black to-gray-900 p-4 flex items-center gap-3 shadow-lg sticky top-0 z-10">

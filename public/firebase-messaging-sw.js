@@ -26,6 +26,7 @@ messaging.onBackgroundMessage((payload) => {
   const clickUrl = payload.data?.click_action || "https://devworld.in/";
 
   // Ensure notifications don’t stack unnecessarily
+ // In your service worker code, self refers to the service worker global scope. It's similar to window in a browser but for service workers.
   self.registration.getNotifications().then((existingNotifications) => {
     const isDuplicate = existingNotifications.some((n) => n.title === title);
     if (!isDuplicate) {
@@ -44,7 +45,20 @@ self.addEventListener("notificationclick", (event) => {
 
   event.waitUntil(
     clients
+      // This below line gets all open browser tabs (clients) of your web app.
+      //      type: "window" → Only look for tabs (not workers or shared clients).
+
+      // includeUncontrolled: true → Include tabs not yet controlled by the service worker (like just opened).
+
       .matchAll({ type: "window", includeUncontrolled: true })
+      // A promise that resolves to clientList – an array of open tabs of your app.
+      // You can then:
+
+      // Check if the app is already open
+
+      // Focus an existing tab
+
+      // Or open a new one
       .then((clientList) => {
         const targetUrl =
           event.notification.data?.url || "https://devworld.in/";
@@ -60,19 +74,6 @@ self.addEventListener("notificationclick", (event) => {
           // Sends a message to the app with the chat path in NotificationClickHandler.jsx
           matchingClient.postMessage({ type: "OPEN_CHAT", path: chatPath });
         } else {
-          // Open the app first, then navigate to chat
-
-          //         🔹 So Why Does It Still Go to /chat/123?
-          // Because your frontend routing (React Router) is smart.
-
-          // Here’s what’s probably happening:
-
-          // When you click the notification, it opens the homepage (https://devworld.in/).
-
-          // Within milliseconds, the service worker tries to send a postMessage() with { type: "OPEN_CHAT", path: "/chat/123" }.
-
-          // Your app's NotificationClickHandler.jsx is already listening for it:
-          // return clients.openWindow("https://devworld.in/");
           return clients.openWindow(targetUrl);
         }
       })
